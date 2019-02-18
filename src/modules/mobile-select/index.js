@@ -12,6 +12,7 @@
 	}
 	//构造器
 	function MobileSelect(config) {
+		console.log('this config', config);
 		this.mobileSelect;
 		this.wheelsData = config.wheels;
 		this.jsonType =  false;
@@ -71,7 +72,6 @@
 			_this.checkIsPC();
 			_this.checkCascade();
 			_this.addListenerAll();
-
 			if (_this.cascade) {
 				_this.initCascade();
 			}

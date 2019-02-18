@@ -49,7 +49,6 @@
     "babel-polyfill": "^6.26.0",
     "inline-style-prefixer": "^5.0.3",
     "jss-camel-case": "^6.1.0",
-    "mobile-select": "^1.1.2",
     "node-sass-utils": "^1.1.2",
     "validate-by-health": "^1.1.9",
     "vconsole": "^3.2.0",
