@@ -10,7 +10,8 @@ const regions = formatWheelsData(window.BY_HEALTH_REGIONS);
 
 window.newPicker = new AddressPicker({
 	trigger: '#example', // 触发Dom
-	title: '地区选择',
+	textColor: 'red',
+	title: '请选择省市区',
 	defaultValue: ['15', '1513', '151315'], // 默认选择的地址
 	// triggerDisplayData: true, // 是否在"触发Dom"中显示已选数据 默认false(mobile-select中默认true)
 	regions, // 原始数据
