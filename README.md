@@ -1,5 +1,6 @@
-###地址选择
-###case
+## 地址选择 AddressPicker
+### AddressPicker extends MobileSelect
+### case
 ```javascript
 
 import AddressPicker from './modules/AddressPicker';
