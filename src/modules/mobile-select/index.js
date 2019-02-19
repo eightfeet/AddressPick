@@ -12,7 +12,6 @@
 	}
 	//构造器
 	function MobileSelect(config) {
-		console.log('this config', config);
 		this.mobileSelect;
 		this.wheelsData = config.wheels;
 		this.jsonType =  false;

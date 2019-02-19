@@ -47,7 +47,10 @@ window.newPicker = new AddressPicker({
 });
 
 document.getElementById('exampleshow').onclick = function(){
-	// 更新省市区位置（[省id, 市id, 区id]）
-	window.newPicker.upDatePicker(['19', '1922', '192215']);
-};
+		// 更新省市区位置 arguments:([省id, 市id, 区id], callback)
+		window.newPicker.upDatePicker(['19', '1922', '192215'], () => {
+			// 显示AddressPicker
+			window.newPicker.showPicker();
+		})
+	};
 ```

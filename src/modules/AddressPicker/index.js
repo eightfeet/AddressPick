@@ -42,10 +42,11 @@ class AddressPicker extends MobileSelect {
 		this.initPosition = getPositionByDefaultValue(data, this.wheelsData);
 	}
 
-	upDatePicker = (data) => {
+	upDatePicker = (data, callback) => {
 		const willData = this.wheelsData[0].data;
 		this.setPositionById(data);
 		this.updateWheels(willData);
+		window.setTimeout(()=>callback(), 100);
 	}
 
 	showPicker = (data) => {
