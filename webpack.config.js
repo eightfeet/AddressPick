@@ -82,10 +82,10 @@ module.exports = (env, argv) => ({
 	entry: './src/index.js',
 	context: path.resolve(__dirname),
 	output: {
-		library: '___Modal___',
+		library: '___AddressPicker___',
 		libraryTarget: 'umd',
 		path: path.resolve(__dirname, 'dist'),
-		filename: 'modal.js',
+		filename: 'addresspicker.js',
 		publicPath: argv.mode === 'development' ? '/' : cdn
 	},
 	module: {

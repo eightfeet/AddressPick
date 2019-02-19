@@ -31,6 +31,9 @@
 		this.curDistance = [];
 		this.clickStatus = false;
 		this.isPC = true;
+		this.ensureBtnClass = config.ensureBtnClass;
+		this.cancelBtnClass = config.cancelBtnClass;
+		this.overlayClass = config.overlayClass;
 		this.init(config);
 	}
 	MobileSelect.prototype = {
@@ -198,13 +201,13 @@
 			_this.mobileSelect = document.createElement("div");
 			_this.mobileSelect.className = "mobileSelect";
 			_this.mobileSelect.innerHTML =
-		    	'<div class="grayLayer"></div>'+
+		    	'<div class="grayLayer '+ _this.overlayClass +'"></div>'+
 		        '<div class="content">'+
 		            '<div class="btnBar">'+
 		                '<div class="fixWidth">'+
-		                    '<div class="cancel">'+ cancelText +'</div>'+
+		                    '<div class="cancel"><span class='+ _this.cancelBtnClass +'>'+ cancelText +'</span></div>'+
 		                    '<div class="title"></div>'+
-		                    '<div class="ensure">'+ ensureText +'</div>'+
+		                    '<div class="ensure"><span class='+ _this.ensureBtnClass +'>'+ ensureText +'</span></div>'+
 		                '</div>'+
 		            '</div>'+
 		            '<div class="panel">'+
