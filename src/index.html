@@ -104,13 +104,11 @@
 
         var regions = formatWheelsData(window.BY_HEALTH_REGIONS);
 
-        console.log(66666, regions);
-
         window.newPicker = new ___AddressPicker___({
             trigger: '#example', // 触发Dom
             title: '请选择省市区', // 设置标题
             defaultValue: ['15', '1513', '151315'], // 默认选择的地址
-            // triggerDisplayData: true, // 是否在"触发Dom"中显示已选数据 默认false(mobile-select中默认true)
+            triggerDisplayData: true, // 是否在"触发Dom"中显示已选数据 默认false(mobile-select中默认true)
             regions: regions, // 原始数据
             // callback 确定后的回调，返回两个参数值，indexArr, data (分别代表当前选中wheels的位置和值)。
             callback: function(indexArr, data){

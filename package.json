@@ -1,8 +1,8 @@
 {
-  "name": "@eightfeet/modal",
+  "name": "@eightfeet/addresspicker",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/modal.js",
+  "main": "./dist/addresspicker.js",
   "files": [
     "dist"
   ],
@@ -44,7 +44,6 @@
     "webpack-dev-server": "^3.1.5"
   },
   "dependencies": {
-    "@eightfeet/modal": "^1.0.0",
     "autoprefix": "^1.0.1",
     "babel-polyfill": "^6.26.0",
     "inline-style-prefixer": "^5.0.3",
