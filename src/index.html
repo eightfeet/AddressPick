@@ -75,7 +75,11 @@
             return provinces;
         }
 
-        function getPositionByDefaultValue(defaultValue, wheels){
+        function getPositionByDefaultValue(defaultData, wheels){
+            var defaultValue = defaultData || [];
+            if (!Array.isArray(defaultValue) || defaultValue.length < 1) {
+                return;
+            }
             var data = wheels[0].data;
             var position = [];
             for (let indexP = 0; indexP < data.length; indexP++) {
@@ -107,7 +111,7 @@
         window.newPicker = new ___AddressPicker___({
             trigger: '#example', // 触发Dom
             title: '请选择省市区', // 设置标题
-            defaultValue: ['15', '1513', '151315'], // 默认选择的地址
+            // defaultValue: ['15', '1513', '151315'], // 默认选择的地址
             triggerDisplayData: true, // 是否在"触发Dom"中显示已选数据 默认false(mobile-select中默认true)
             regions: regions, // 原始数据
             // callback 确定后的回调，返回两个参数值，indexArr, data (分别代表当前选中wheels的位置和值)。

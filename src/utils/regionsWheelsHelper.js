@@ -58,7 +58,11 @@ export function formatWheelsData(data){
 	return provinces;
 }
 
-export function getPositionByDefaultValue(defaultValue, wheels){
+export function getPositionByDefaultValue(defaultData, wheels){
+	const defaultValue = defaultData || [];
+	if (!Array.isArray(defaultValue) || defaultValue.length < 1) {
+		return;
+	}
 	const data = wheels[0].data;
 	const position = [];
 	for (let indexP = 0; indexP < data.length; indexP++) {
