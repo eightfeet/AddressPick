@@ -46,7 +46,7 @@ class AddressPicker extends MobileSelect {
 		const willData = this.wheelsData[0].data;
 		this.setPositionById(data);
 		this.updateWheels(willData);
-		window.setTimeout(()=>callback(), 100);
+		window.setTimeout(()=> callback && callback(), 100);
 	}
 
 	showPicker = (data) => {
