@@ -5,7 +5,7 @@ import { inlineStyle } from '~/utils/tools';
 
 class AddressPicker extends MobileSelect {
 	constructor(data){
-		const { defaultValue, regions, style } = data || {};
+		const { defaultValue, regions, style, popularCities } = data || {};
 		const wheels = [
 			{ data: regions } // 原始数据
 		];
@@ -19,9 +19,38 @@ class AddressPicker extends MobileSelect {
 			overlayClass: s.overlay
 		};
 		super(operatedData);
-		const ensureBtnElement = document.querySelector(`.${s.btnEnsure}`);
-		const cancelBtnElement = document.querySelector(`.${s.btnCancel}`);
-		const overlayElement = document.querySelector(`.${s.overlay}`);
+		this.popularCities = popularCities || [{name: '广州', id: ['15', '1513']},{name: '邯郸', id: ['19', '1922']}];
+		this.initAddressPicker(style);
+
+	}
+
+
+	initAddressPicker = (style) => {
+		const ensureBtnElement = this.mobileSelect.querySelector(`.${s.btnEnsure}`);
+		const cancelBtnElement = this.mobileSelect.querySelector(`.${s.btnCancel}`);
+		const overlayElement = this.mobileSelect.querySelector(`.${s.overlay}`);
+		const contentElement = this.mobileSelect.querySelector('.content');
+		const btnBarElement = this.mobileSelect.querySelector('.btnBar');
+
+		let popularCityDom = document.createElement('div');
+		popularCityDom.classList.add(s.popularcities);
+		if (this.popularCities && Array.isArray(this.popularCities)) {
+			this.popularCities.forEach(item => {
+				const div = document.createElement('div');
+				div.innerHTML = item.name;
+				div.setAttribute('data-id', item.id);
+				div.addEventListener('click',e => {
+					let positionData = e.target.getAttribute('data-id');
+					if (positionData) {
+						positionData = positionData.split(',');
+					}
+					this.upDatePicker(positionData);
+				});
+				popularCityDom.appendChild(div);
+			});
+		}
+
+		contentElement.insertBefore(popularCityDom, btnBarElement);
 		const {ensureBtn, cancelBtn, overlay} = style || {};
 
 		if (ensureBtn) {
