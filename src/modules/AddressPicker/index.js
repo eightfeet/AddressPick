@@ -1,6 +1,6 @@
-import MobileSelect from './../mobile-select';
+import MobileSelect from './../MobileSelect';
 import { getPositionByDefaultValue } from '~/utils/regionsWheelsHelper.js';
-import s from './AddressPicker.scss';
+import m from './../MobileSelect/mobile-select.scss';
 import { inlineStyle } from '~/utils/tools';
 
 class AddressPicker extends MobileSelect {
@@ -13,10 +13,7 @@ class AddressPicker extends MobileSelect {
 			triggerDisplayData: false,
 			...data,
 			position: getPositionByDefaultValue(defaultValue, wheels),
-			wheels,
-			ensureBtnClass: s.btnEnsure,
-			cancelBtnClass: s.btnCancel,
-			overlayClass: s.overlay
+			wheels
 		};
 		super(operatedData);
 		this.popularCities = popularCities;
@@ -26,17 +23,17 @@ class AddressPicker extends MobileSelect {
 
 
 	initAddressPicker = (style) => {
-		const ensureBtnElement = this.mobileSelect.querySelector(`.${s.btnEnsure}`);
-		const cancelBtnElement = this.mobileSelect.querySelector(`.${s.btnCancel}`);
-		const overlayElement = this.mobileSelect.querySelector(`.${s.overlay}`);
-		const contentElement = this.mobileSelect.querySelector('.content');
-		const btnBarElement = this.mobileSelect.querySelector('.btnBar');
+		const ensureBtnElement = this.mobileSelect.querySelector(`.${m.btnEnsure}`);
+		const cancelBtnElement = this.mobileSelect.querySelector(`.${m.btnCancel}`);
+		const overlayElement = this.mobileSelect.querySelector(`.${m.overlay}`);
+		const contentElement = this.mobileSelect.querySelector(`.${m.content}`);
+		const btnBarElement = this.mobileSelect.querySelector(`.${m.btnBar}`);
 
 		if (this.popularCities && Array.isArray(this.popularCities)) {
 			let popularCityDom = document.createElement('div');
-			popularCityDom.innerHTML = `<h3 class="${s.hottitle}">热门城市</h3>`;
-			popularCityDom.classList.add(s.popularcities);
-			popularCityDom.classList.add(s.clearfix);
+			popularCityDom.innerHTML = `<h3 class="${m.hottitle}">热门城市</h3>`;
+			popularCityDom.classList.add(m.popularcities);
+			popularCityDom.classList.add(m.clearfix);
 
 			this.popularCities.forEach(item => {
 				const div = document.createElement('div');

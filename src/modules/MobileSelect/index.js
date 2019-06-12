@@ -1,9 +1,6 @@
 /* eslint-disable */
-/*!
- * mobileSelect.js
- * (c) 2017-present onlyhom
- * Released under the MIT License.
- */
+
+import s from './mobile-select.scss';
 
 (function() {
 	// require('./mobile-select.css');
@@ -30,9 +27,6 @@
 		this.curDistance = [];
 		this.clickStatus = false;
 		this.isPC = true;
-		this.ensureBtnClass = config.ensureBtnClass;
-		this.cancelBtnClass = config.cancelBtnClass;
-		this.overlayClass = config.overlayClass;
 		this.init(config);
 	}
 	MobileSelect.prototype = {
@@ -51,14 +45,14 @@
 				console.error('mobileSelect has been successfully installed, but no trigger found on your page.');
 				return false;
 			}
-			_this.wheel = getClass(_this.mobileSelect,'wheel');
-			_this.slider = getClass(_this.mobileSelect,'selectContainer');
-			_this.wheels = _this.mobileSelect.querySelector('.wheels');
+			_this.wheel = getClass(_this.mobileSelect, s.wheel);
+			_this.slider = getClass(_this.mobileSelect, s.selectContainer);
+			_this.wheels = _this.mobileSelect.querySelector(`.${s.wheels}`);
 			_this.liHeight = _this.mobileSelect.querySelector('li').offsetHeight;
-			_this.ensureBtn = _this.mobileSelect.querySelector('.ensure');
-			_this.cancelBtn = _this.mobileSelect.querySelector('.cancel');
-			_this.grayLayer = _this.mobileSelect.querySelector('.grayLayer');
-			_this.popUp = _this.mobileSelect.querySelector('.content');
+			_this.ensureBtn = _this.mobileSelect.querySelector(`.${s.ensure}`);
+			_this.cancelBtn = _this.mobileSelect.querySelector(`.${s.cancel}`);
+			_this.grayLayer = _this.mobileSelect.querySelector(`.${s.grayLayer}`);
+			_this.popUp = _this.mobileSelect.querySelector(`.${s.content}`);
 			_this.callback = config.callback || function(){};
 			_this.cancel = config.cancel || function(){};
 			_this.transitionEnd = config.transitionEnd || function(){};
@@ -128,7 +122,7 @@
 		setTitle: function(string){
 			var _this = this;
 			_this.titleText = string;
-			_this.mobileSelect.querySelector('.title').innerHTML = _this.titleText;
+			_this.mobileSelect.querySelector(`.${s.title}`).innerHTML = _this.titleText;
 		},
 
 		setStyle: function(config){
@@ -140,25 +134,25 @@
 				_this.cancelBtn.style.color = config.cancelBtnColor;
 			}
 			if(config.titleColor){
-				_this.title = _this.mobileSelect.querySelector('.title');
+				_this.title = _this.mobileSelect.querySelector(`.${s.title}`);
 				_this.title.style.color = config.titleColor;
 			}
 			if(config.textColor){
-				_this.panel = _this.mobileSelect.querySelector('.panel');
+				_this.panel = _this.mobileSelect.querySelector(`.${s.panel}`);
 				_this.panel.style.color = config.textColor;
 			}
 			if(config.titleBgColor){
-				_this.btnBar = _this.mobileSelect.querySelector('.btnBar');
+				_this.btnBar = _this.mobileSelect.querySelector(`.${s.btnBar}`);
 				_this.btnBar.style.backgroundColor = config.titleBgColor;
 			}
 			if(config.bgColor){
-				_this.panel = _this.mobileSelect.querySelector('.panel');
-				_this.shadowMask = _this.mobileSelect.querySelector('.shadowMask');
+				_this.panel = _this.mobileSelect.querySelector(`.${s.panel}`);
+				_this.shadowMask = _this.mobileSelect.querySelector(`.${s.shadowMask}`);
 				_this.panel.style.backgroundColor = config.bgColor;
 				_this.shadowMask.style.background = 'linear-gradient(to bottom, '+ config.bgColor + ', rgba(255, 255, 255, 0), '+ config.bgColor + ')';
 			}
 			if(!isNaN(config.maskOpacity)){
-				_this.grayMask = _this.mobileSelect.querySelector('.grayLayer');
+				_this.grayMask = _this.mobileSelect.querySelector(`.${s.grayLayer}`);
 				_this.grayMask.style.background = 'rgba(0, 0, 0, '+ config.maskOpacity +')';
 			}
 		},
@@ -180,14 +174,14 @@
 		},
 
  		show: function(){
-			this.mobileSelect.classList.add('mobileSelect-show');
+			this.mobileSelect.classList.add(s['mobileSelect-show']);
 			if (typeof this.onShow === 'function') {
 				this.onShow(this);
 			}
   		},
 
 	    hide: function() {
-			this.mobileSelect.classList.remove('mobileSelect-show');
+			this.mobileSelect.classList.remove(s['mobileSelect-show']);
 			if (typeof this.onHide === 'function') {
 				this.onHide(this);
 			}
@@ -199,22 +193,23 @@
 			var ensureText = ensureBtnText ? ensureBtnText : '确认';
 			_this.mobileSelect = document.createElement("div");
 			_this.mobileSelect.className = "mobileSelect";
+			_this.mobileSelect.className = s.mobileSelect;
 			_this.mobileSelect.innerHTML =
-		    	'<div class="grayLayer '+ _this.overlayClass +'"></div>'+
-		        '<div class="content">'+
-		            '<div class="btnBar">'+
-		                '<div class="fixWidth">'+
-		                    '<div class="cancel"><span class='+ _this.cancelBtnClass +'>'+ cancelText +'</span></div>'+
-		                    '<div class="title"></div>'+
-		                    '<div class="ensure"><span class='+ _this.ensureBtnClass +'>'+ ensureText +'</span></div>'+
+		    	`<div class="${s.grayLayer} ${_this.overlayClass}"></div>`+
+		        `<div class="${s.content}">`+
+		            `<div class="${s.btnBar}">`+
+		                `<div class="${s.fixWidth}">`+
+		                    `<div class="${s.cancel}"><span class="${s.btnCancel}">${cancelText}</span></div>`+
+		                    `<div class="${s.title}"></div>`+
+		                    `<div class="${s.ensure}"><span class="${s.btnEnsure}">${ensureText}</span></div>`+
 		                '</div>'+
 		            '</div>'+
-		            '<div class="panel">'+
-		                '<div class="fixWidth">'+
-		                	'<div class="wheels">'+
+		            `<div class="${s.panel}">`+
+		                `<div class="${s.fixWidth}">`+
+		                	`<div class="${s.wheels}">`+
 			                '</div>'+
-		                    '<div class="selectLine"></div>'+
-		                    '<div class="shadowMask"></div>'+
+		                    `<div class="${s.selectLine}"></div>`+
+		                    `<div class="${s.shadowMask}"></div>`+
 		                '</div>'+
 		            '</div>'+
 		        '</div>';
@@ -225,7 +220,7 @@
 			var tempHTML='';
 			for(var i=0; i<wheelsData.length; i++){
 			//列
-				tempHTML += '<div class="wheel"><ul class="selectContainer">';
+				tempHTML += `<div class="${s.wheel}"><ul class="${s.selectContainer}">`;
 				if(_this.jsonType){
 					for(var j=0; j<wheelsData[i].data.length; j++){
 					//行
@@ -239,7 +234,7 @@
 				}
 				tempHTML += '</ul></div>';
 			}
-			_this.mobileSelect.querySelector('.wheels').innerHTML = tempHTML;
+			_this.mobileSelect.querySelector(`.${s.wheels}`).innerHTML = tempHTML;
 		},
 
 		addListenerAll: function(){
@@ -417,8 +412,8 @@
 
 					}else{
 						var tempWheel = document.createElement("div");
-						tempWheel.className = "wheel";
-						tempHTML = '<ul class="selectContainer">';
+						tempWheel.className = s.wheel;
+						tempHTML = `<ul class="${s.selectContainer}">`;
 						for(var j=0; j<_this.displayJson[i].length; j++){
 						//行
 							tempHTML += '<li data-id="'+_this.displayJson[i][j][_this.keyMap.id]+'">'+_this.displayJson[i][j][_this.keyMap.value]+'</li>';
