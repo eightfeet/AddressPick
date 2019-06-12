@@ -19,7 +19,7 @@ class AddressPicker extends MobileSelect {
 			overlayClass: s.overlay
 		};
 		super(operatedData);
-		this.popularCities = popularCities || [{name: '广州', id: ['15', '1513']},{name: '邯郸', id: ['19', '1922']}];
+		this.popularCities = popularCities;
 		this.initAddressPicker(style);
 
 	}
@@ -32,9 +32,12 @@ class AddressPicker extends MobileSelect {
 		const contentElement = this.mobileSelect.querySelector('.content');
 		const btnBarElement = this.mobileSelect.querySelector('.btnBar');
 
-		let popularCityDom = document.createElement('div');
-		popularCityDom.classList.add(s.popularcities);
 		if (this.popularCities && Array.isArray(this.popularCities)) {
+			let popularCityDom = document.createElement('div');
+			popularCityDom.innerHTML = `<h3 class="${s.hottitle}">热门城市</h3>`;
+			popularCityDom.classList.add(s.popularcities);
+			popularCityDom.classList.add(s.clearfix);
+
 			this.popularCities.forEach(item => {
 				const div = document.createElement('div');
 				div.innerHTML = item.name;
@@ -48,9 +51,9 @@ class AddressPicker extends MobileSelect {
 				});
 				popularCityDom.appendChild(div);
 			});
+			contentElement.insertBefore(popularCityDom, btnBarElement);
 		}
 
-		contentElement.insertBefore(popularCityDom, btnBarElement);
 		const {ensureBtn, cancelBtn, overlay} = style || {};
 
 		if (ensureBtn) {

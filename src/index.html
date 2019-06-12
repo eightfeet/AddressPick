@@ -107,6 +107,19 @@
         }
 
         var regions = formatWheelsData(window.BY_HEALTH_REGIONS);
+        var popularCities = [
+            {name: '北京', id: ['12', '1210']},
+            {name: '上海', id: ['34', '3410']},
+            {name: '广州', id: ['15', '1513']},
+            {name: '深圳', id: ['15', '1524']},
+            {name: '杭州', id: ['43', '4311']},
+            {name: '南京', id: ['26', '2613']},
+            {name: '天津', id: ['37', '3710']},
+            {name: '苏州', id: ['26', '2616']},
+            {name: '长沙', id: ['24', '2411']},
+            {name: '重庆', id: ['13', '1310']},
+            {name: '成都', id: ['32', '3212']}
+        ];
 
         window.newPicker = new ___AddressPicker___({
             trigger: '#example', // 触发Dom
@@ -114,6 +127,7 @@
             // defaultValue: ['15', '1513', '151315'], // 默认选择的地址
             triggerDisplayData: true, // 是否在"触发Dom"中显示已选数据 默认false(mobile-select中默认true)
             regions: regions, // 原始数据
+            popularCities: popularCities,
             // callback 确定后的回调，返回两个参数值，indexArr, data (分别代表当前选中wheels的位置和值)。
             callback: function(indexArr, data){
                 console.log('callback', indexArr, data);
@@ -126,8 +140,10 @@
             style: {
                 // 确定按钮
                 ensureBtn: {
-                    backgroundColor: 'red',
-                    color: '#fff'
+                    backgroundColor: '#7fb581',
+                    color: '#fff',
+                    padding: '5px 10px',
+                    borderRadius: '5px'
                 },
                 // 取消按钮
                 cancelBtn: {
