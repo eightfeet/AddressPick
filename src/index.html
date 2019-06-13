@@ -129,17 +129,17 @@
             regions: regions, // 原始数据
             popularCities: popularCities,
             // callback 确定后的回调，返回两个参数值，indexArr, data (分别代表当前选中wheels的位置和值)。
-            callback: function(indexArr, data){
+            onConfirm: function(indexArr, data){
                 console.log('callback', indexArr, data);
             },
             // 取消后的回调
-            cancel: function(indexArr, data){
+            onCancel: function(indexArr, data){
                 console.log('取消', indexArr, data);
             },
             // 控制样式
             style: {
                 // 确定按钮
-                ensureBtn: {
+                confirmBtn: {
                     backgroundColor: '#7fb581',
                     color: '#fff',
                     padding: '5px 10px',

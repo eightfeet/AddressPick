@@ -60,8 +60,8 @@ class MobileSelect {
 		this.cancelBtn = this.mobileSelect.querySelector(`.${s.cancel}`);
 		this.grayLayer = this.mobileSelect.querySelector(`.${s.grayLayer}`);
 		this.popUp = this.mobileSelect.querySelector(`.${s.content}`);
-		this.callback = config.callback || function () { };
-		this.cancel = config.cancel || function () { };
+		this.onConfirm = config.onConfirm || function () { };
+		this.onCancel = config.onCancel || function () { };
 		this.transitionEnd = config.transitionEnd || function () { };
 		this.onShow = config.onShow || function () { };
 		this.onHide = config.onHide || function () { };
@@ -95,7 +95,7 @@ class MobileSelect {
 		//按钮监听
 		this.cancelBtn.addEventListener("click", () => {
 			this.hide();
-			this.cancel(this.curIndexArr, this.curValue);
+			this.onCancel(this.curIndexArr, this.curValue);
 		});
 
 		this.ensureBtn.addEventListener("click", () => {
@@ -114,7 +114,7 @@ class MobileSelect {
 			}
 			this.curIndexArr = this.getIndexArr();
 			this.curValue = this.getCurValue();
-			this.callback(this.curIndexArr, this.curValue);
+			this.onConfirm(this.curIndexArr, this.curValue);
 		});
 
 		this.trigger.addEventListener("click", () => {
@@ -122,7 +122,7 @@ class MobileSelect {
 		});
 		this.grayLayer.addEventListener("click", () => {
 			this.hide();
-			this.cancel(this.curIndexArr, this.curValue);
+			this.onCancel(this.curIndexArr, this.curValue);
 		});
 		this.popUp.addEventListener("click", () => {
 			event.stopPropagation();

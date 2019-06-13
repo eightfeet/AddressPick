@@ -26,12 +26,12 @@ class AddressPicker extends MobileSelect {
 	}
 
 	initAddressPicker = style => {
-		const ensureBtnElement = this.mobileSelect.querySelector(`.${m.btnEnsure}`);
+		const confirmBtnElement = this.mobileSelect.querySelector(`.${m.btnEnsure}`);
 		const cancelBtnElement = this.mobileSelect.querySelector(`.${m.btnCancel}`);
 		const overlayElement = this.mobileSelect.querySelector(`.${m.overlay}`);
 		const contentElement = this.mobileSelect.querySelector(`.${m.content}`);
 		const btnBarElement = this.mobileSelect.querySelector(`.${m.btnBar}`);
-		const { ensureBtn, cancelBtn, overlay, popularCities, popularCitiesTitle, popularCitiesItem } = style || {};
+		const { confirmBtn, cancelBtn, overlay, popularCities, popularCitiesTitle, popularCitiesItem } = style || {};
 
 		if (this.popularCities && Array.isArray(this.popularCities)) {
 			let popularCityDom = document.createElement("div");
@@ -77,10 +77,10 @@ class AddressPicker extends MobileSelect {
 			}
 		}
 
-		if (ensureBtn) {
-			const inLineEnsureBtn = inlineStyle(ensureBtn);
-			inLineEnsureBtn &&
-				ensureBtnElement.setAttribute("style", inLineEnsureBtn);
+		if (confirmBtn) {
+			const inLineConfirmBtn = inlineStyle(confirmBtn);
+			inLineConfirmBtn &&
+				confirmBtnElement.setAttribute("style", inLineConfirmBtn);
 		}
 		if (cancelBtn) {
 			const inLineCancelBtn = inlineStyle(cancelBtn);
