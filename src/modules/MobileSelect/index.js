@@ -217,7 +217,7 @@ class MobileSelect {
 		this.mobileSelect = document.createElement("div");
 		this.mobileSelect.setAttribute("id", this.id);
 		this.mobileSelect.className = s.mobileSelect;
-		this.mobileSelect.innerHTML = `<div class="${s.grayLayer}"></div> 
+		this.mobileSelect.innerHTML = `<div class="${s.grayLayer} ${s.overlay}"></div> 
 				<div class="${s.content}">
 					<div class="${s.btnBar}"> 
 						<div class="${s.fixWidth}">

@@ -31,6 +31,7 @@ class AddressPicker extends MobileSelect {
 		const overlayElement = this.mobileSelect.querySelector(`.${m.overlay}`);
 		const contentElement = this.mobileSelect.querySelector(`.${m.content}`);
 		const btnBarElement = this.mobileSelect.querySelector(`.${m.btnBar}`);
+		const { ensureBtn, cancelBtn, overlay, popularCities, popularCitiesTitle, popularCitiesItem } = style || {};
 
 		if (this.popularCities && Array.isArray(this.popularCities)) {
 			let popularCityDom = document.createElement("div");
@@ -41,6 +42,7 @@ class AddressPicker extends MobileSelect {
 			this.popularCities.forEach(item => {
 				const div = document.createElement("div");
 				div.innerHTML = item.name;
+				div.className = m.hotitem;
 				div.setAttribute("data-id", item.id);
 				div.addEventListener("click", e => {
 					let positionData = e.target.getAttribute("data-id");
@@ -52,9 +54,28 @@ class AddressPicker extends MobileSelect {
 				popularCityDom.appendChild(div);
 			});
 			contentElement.insertBefore(popularCityDom, btnBarElement);
-		}
 
-		const { ensureBtn, cancelBtn, overlay } = style || {};
+			const popularCitiesElement = this.mobileSelect.querySelector(`.${m.popularcities}`);
+			const hottitleElement = this.mobileSelect.querySelector(`.${m.hottitle}`);
+			const hotitemElement = popularCitiesElement.getElementsByTagName('div');
+
+			if (popularCities) {
+				const inLinePopularCities = inlineStyle(popularCities);
+				inLinePopularCities && popularCitiesElement.setAttribute("style", inLinePopularCities);
+			}
+
+			if (popularCitiesTitle) {
+				const inLinePopularCitiesTitle = inlineStyle(popularCitiesTitle);
+				inLinePopularCitiesTitle && hottitleElement.setAttribute("style", inLinePopularCitiesTitle);
+			}
+
+			if (popularCitiesItem && inlineStyle(popularCitiesItem)) {
+				for (let index = 0; index < hotitemElement.length; index++) {
+					const element = hotitemElement[index];
+					element.setAttribute("style", inlineStyle(popularCitiesItem));
+				}
+			}
+		}
 
 		if (ensureBtn) {
 			const inLineEnsureBtn = inlineStyle(ensureBtn);
@@ -70,6 +91,7 @@ class AddressPicker extends MobileSelect {
 			const inLineOverly = inlineStyle(overlay);
 			inLineOverly && overlayElement.setAttribute("style", inLineOverly);
 		}
+		
 	};
 
 	setPositionById = data => {

@@ -1,4 +1,6 @@
-.btnEnsure, .btnCancel, .overlay{
+.btnEnsure, 
+.btnCancel, 
+.overlay{
   font-weight: normal;
 }
 
@@ -13,7 +15,7 @@
   .popularcities {
     background-color: #e4e4e4;
     padding-bottom: 20px;
-    div {
+    .hotitem {
         float: left;
         width: 23%;
         text-align: center;
