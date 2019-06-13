@@ -7,7 +7,7 @@ const stamp = new Date().getTime();
 
 class AddressPicker extends MobileSelect {
 	constructor(data) {
-		const { defaultValue, regions, style, popularCities } = data || {};
+		const { defaultValue, regions, style, popularCities, id } = data || {};
 		const wheels = [
 			{ data: regions } // 原始数据
 		];
@@ -16,7 +16,7 @@ class AddressPicker extends MobileSelect {
 			...data,
 			position: getPositionByDefaultValue(defaultValue, wheels),
 			wheels,
-			id: `AddressPicker-${stamp}${window.Math.floor(
+			id: id || `AddressPicker-${stamp}${window.Math.floor(
 				window.Math.random() * 100
 			)}`
 		};
