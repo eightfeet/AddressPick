@@ -1,17 +1,15 @@
-/* eslint-disable */
+import s from "./MobileSelect.scss";
 
-import s from './mobile-select.scss';
+function getClass(dom, string) {
+	return dom.getElementsByClassName(string);
+}
 
-(function() {
-	// require('./mobile-select.css');
-	function getClass(dom,string) {
-		return dom.getElementsByClassName(string);
-	}
-	//构造器
-	function MobileSelect(config) {
+class MobileSelect {
+	constructor(config) {
+		const { wheels } = config;
 		this.mobileSelect;
-		this.wheelsData = config.wheels;
-		this.jsonType =  false;
+		this.wheelsData = wheels;
+		this.jsonType = false;
 		this.cascadeJsonData = [];
 		this.displayJson = [];
 		this.curValue = [];
@@ -27,695 +25,749 @@ import s from './mobile-select.scss';
 		this.curDistance = [];
 		this.clickStatus = false;
 		this.isPC = true;
+		this.id = config.id;
 		this.init(config);
 	}
-	MobileSelect.prototype = {
-		constructor: MobileSelect,
-		init: function(config){
-			var _this = this;
-			if(config.wheels[0].data.length==0){
-				console.error('mobileSelect has been successfully installed, but the data is empty and cannot be initialized.');
-				return false;
+
+	init = config => {
+		if (config.wheels[0].data.length === 0) {
+			console.error(
+				"mobileSelect has been successfully installed, but the data is empty and cannot be initialized."
+			);
+			return false;
+		}
+		this.keyMap = config.keyMap
+			? config.keyMap
+			: { id: "id", value: "value", childs: "childs" };
+		this.checkDataType();
+		this.renderWheels(
+			this.wheelsData,
+			config.cancelBtnText,
+			config.ensureBtnText
+		);
+		this.trigger = document.querySelector(config.trigger);
+		if (!this.trigger) {
+			console.error(
+				"mobileSelect has been successfully installed, but no trigger found on your page."
+			);
+			return false;
+		}
+		this.wheel = getClass(this.mobileSelect, s.wheel);
+		this.slider = getClass(this.mobileSelect, s.selectContainer);
+		this.wheels = this.mobileSelect.querySelector(`.${s.wheels}`);
+		this.liHeight = this.mobileSelect.querySelector("li").offsetHeight;
+		this.ensureBtn = this.mobileSelect.querySelector(`.${s.ensure}`);
+		this.cancelBtn = this.mobileSelect.querySelector(`.${s.cancel}`);
+		this.grayLayer = this.mobileSelect.querySelector(`.${s.grayLayer}`);
+		this.popUp = this.mobileSelect.querySelector(`.${s.content}`);
+		this.callback = config.callback || function () { };
+		this.cancel = config.cancel || function () { };
+		this.transitionEnd = config.transitionEnd || function () { };
+		this.onShow = config.onShow || function () { };
+		this.onHide = config.onHide || function () { };
+		this.initPosition = config.position || [];
+		this.titleText = config.title || "";
+		this.connector = config.connector || " ";
+		this.triggerDisplayData = !(
+			typeof config.triggerDisplayData === "undefined"
+		)
+			? config.triggerDisplayData
+			: true;
+		this.trigger.style.cursor = "pointer";
+		this.setStyle(config);
+		this.setTitle(this.titleText);
+		this.checkIsPC();
+		this.checkCascade();
+		this.addListenerAll();
+		if (this.cascade) {
+			this.initCascade();
+		}
+		//定位 初始位置
+		if (this.initPosition.length < this.slider.length) {
+			let diff = this.slider.length - this.initPosition.length;
+			for (let i = 0; i < diff; i++) {
+				this.initPosition.push(0);
 			}
-			_this.keyMap = config.keyMap ? config.keyMap : {id:'id', value:'value', childs:'childs'};
-			_this.checkDataType();
-			_this.renderWheels(_this.wheelsData, config.cancelBtnText, config.ensureBtnText);
-			_this.trigger = document.querySelector(config.trigger);
-			if(!_this.trigger){
-				console.error('mobileSelect has been successfully installed, but no trigger found on your page.');
-				return false;
+		}
+
+		this.setCurDistance(this.initPosition);
+
+		//按钮监听
+		this.cancelBtn.addEventListener("click", () => {
+			this.hide();
+			this.cancel(this.curIndexArr, this.curValue);
+		});
+
+		this.ensureBtn.addEventListener("click", () => {
+			this.hide();
+			if (!this.liHeight) {
+				this.liHeight = this.mobileSelect.querySelector("li").offsetHeight;
 			}
-			_this.wheel = getClass(_this.mobileSelect, s.wheel);
-			_this.slider = getClass(_this.mobileSelect, s.selectContainer);
-			_this.wheels = _this.mobileSelect.querySelector(`.${s.wheels}`);
-			_this.liHeight = _this.mobileSelect.querySelector('li').offsetHeight;
-			_this.ensureBtn = _this.mobileSelect.querySelector(`.${s.ensure}`);
-			_this.cancelBtn = _this.mobileSelect.querySelector(`.${s.cancel}`);
-			_this.grayLayer = _this.mobileSelect.querySelector(`.${s.grayLayer}`);
-			_this.popUp = _this.mobileSelect.querySelector(`.${s.content}`);
-			_this.callback = config.callback || function(){};
-			_this.cancel = config.cancel || function(){};
-			_this.transitionEnd = config.transitionEnd || function(){};
-			_this.onShow = config.onShow || function(){};
-			_this.onHide = config.onHide || function(){};
-			_this.initPosition = config.position || [];
-			_this.titleText = config.title || '';
-			_this.connector = config.connector || ' ';
-			_this.triggerDisplayData = !(typeof(config.triggerDisplayData)=='undefined') ? config.triggerDisplayData : true;
-			_this.trigger.style.cursor='pointer';
-			_this.setStyle(config);
-			_this.setTitle(_this.titleText);
-			_this.checkIsPC();
-			_this.checkCascade();
-			_this.addListenerAll();
-			if (_this.cascade) {
-				_this.initCascade();
+			let tempValue = "";
+			for (let i = 0; i < this.wheel.length; i++) {
+				i === this.wheel.length - 1
+					? (tempValue += this.getInnerHtml(i))
+					: (tempValue += this.getInnerHtml(i) + this.connector);
 			}
-			//定位 初始位置
-			if(_this.initPosition.length < _this.slider.length){
-				var diff = _this.slider.length - _this.initPosition.length;
-				for(var i=0; i<diff; i++){
-					_this.initPosition.push(0);
-				}
+			if (this.triggerDisplayData) {
+				this.trigger.innerHTML = tempValue;
 			}
+			this.curIndexArr = this.getIndexArr();
+			this.curValue = this.getCurValue();
+			this.callback(this.curIndexArr, this.curValue);
+		});
 
-			_this.setCurDistance(_this.initPosition);
+		this.trigger.addEventListener("click", () => {
+			this.show();
+		});
+		this.grayLayer.addEventListener("click", () => {
+			this.hide();
+			this.cancel(this.curIndexArr, this.curValue);
+		});
+		this.popUp.addEventListener("click", () => {
+			event.stopPropagation();
+		});
 
-
-			//按钮监听
-			_this.cancelBtn.addEventListener('click',function(){
-				_this.hide();
-				_this.cancel(_this.curIndexArr, _this.curValue);
-		    });
-
-		    _this.ensureBtn.addEventListener('click',function(){
-				_this.hide();
-			    if(!_this.liHeight) {
-			        _this.liHeight =  _this.mobileSelect.querySelector('li').offsetHeight;
-			    }
-				var tempValue ='';
-		    	for(var i=0; i<_this.wheel.length; i++){
-		    		i==_this.wheel.length-1 ? tempValue += _this.getInnerHtml(i) : tempValue += _this.getInnerHtml(i) + _this.connector;
-		    	}
-		    	if(_this.triggerDisplayData){
-		    		_this.trigger.innerHTML = tempValue;
-		    	}
-		    	_this.curIndexArr = _this.getIndexArr();
-		    	_this.curValue = _this.getCurValue();
-		    	_this.callback(_this.curIndexArr, _this.curValue);
-		    });
-
-		    _this.trigger.addEventListener('click',function(){
-		    	_this.show();
-		    });
-		    _this.grayLayer.addEventListener('click',function(){
-				_this.hide();
-				_this.cancel(_this.curIndexArr, _this.curValue);
-		    });
-		    _this.popUp.addEventListener('click',function(){
-		    	event.stopPropagation();
-		    });
-
-			_this.fixRowStyle(); //修正列数
-		},
-
-		setTitle: function(string){
-			var _this = this;
-			_this.titleText = string;
-			_this.mobileSelect.querySelector(`.${s.title}`).innerHTML = _this.titleText;
-		},
-
-		setStyle: function(config){
-			var _this = this;
-			if(config.ensureBtnColor){
-				_this.ensureBtn.style.color = config.ensureBtnColor;
-			}
-			if(config.cancelBtnColor){
-				_this.cancelBtn.style.color = config.cancelBtnColor;
-			}
-			if(config.titleColor){
-				_this.title = _this.mobileSelect.querySelector(`.${s.title}`);
-				_this.title.style.color = config.titleColor;
-			}
-			if(config.textColor){
-				_this.panel = _this.mobileSelect.querySelector(`.${s.panel}`);
-				_this.panel.style.color = config.textColor;
-			}
-			if(config.titleBgColor){
-				_this.btnBar = _this.mobileSelect.querySelector(`.${s.btnBar}`);
-				_this.btnBar.style.backgroundColor = config.titleBgColor;
-			}
-			if(config.bgColor){
-				_this.panel = _this.mobileSelect.querySelector(`.${s.panel}`);
-				_this.shadowMask = _this.mobileSelect.querySelector(`.${s.shadowMask}`);
-				_this.panel.style.backgroundColor = config.bgColor;
-				_this.shadowMask.style.background = 'linear-gradient(to bottom, '+ config.bgColor + ', rgba(255, 255, 255, 0), '+ config.bgColor + ')';
-			}
-			if(!isNaN(config.maskOpacity)){
-				_this.grayMask = _this.mobileSelect.querySelector(`.${s.grayLayer}`);
-				_this.grayMask.style.background = 'rgba(0, 0, 0, '+ config.maskOpacity +')';
-			}
-		},
-
-		checkIsPC: function(){
-			var _this = this;
-			var sUserAgent = navigator.userAgent.toLowerCase();
-			var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";
-			var bIsIphoneOs = sUserAgent.match(/iphone os/i) == "iphone os";
-			var bIsMidp = sUserAgent.match(/midp/i) == "midp";
-			var bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4";
-			var bIsUc = sUserAgent.match(/ucweb/i) == "ucweb";
-			var bIsAndroid = sUserAgent.match(/android/i) == "android";
-			var bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";
-			var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
-			if ((bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM)) {
-			    _this.isPC = false;
-			}
-		},
-
- 		show: function(){
-			this.mobileSelect.classList.add(s['mobileSelect-show']);
-			if (typeof this.onShow === 'function') {
-				this.onShow(this);
-			}
-  		},
-
-	    hide: function() {
-			this.mobileSelect.classList.remove(s['mobileSelect-show']);
-			if (typeof this.onHide === 'function') {
-				this.onHide(this);
-			}
-	    },
-
-		renderWheels: function(wheelsData, cancelBtnText, ensureBtnText){
-			var _this = this;
-			var cancelText = cancelBtnText ? cancelBtnText : '取消';
-			var ensureText = ensureBtnText ? ensureBtnText : '确认';
-			_this.mobileSelect = document.createElement("div");
-			_this.mobileSelect.className = "mobileSelect";
-			_this.mobileSelect.className = s.mobileSelect;
-			_this.mobileSelect.innerHTML =
-		    	`<div class="${s.grayLayer} ${_this.overlayClass}"></div>`+
-		        `<div class="${s.content}">`+
-		            `<div class="${s.btnBar}">`+
-		                `<div class="${s.fixWidth}">`+
-		                    `<div class="${s.cancel}"><span class="${s.btnCancel}">${cancelText}</span></div>`+
-		                    `<div class="${s.title}"></div>`+
-		                    `<div class="${s.ensure}"><span class="${s.btnEnsure}">${ensureText}</span></div>`+
-		                '</div>'+
-		            '</div>'+
-		            `<div class="${s.panel}">`+
-		                `<div class="${s.fixWidth}">`+
-		                	`<div class="${s.wheels}">`+
-			                '</div>'+
-		                    `<div class="${s.selectLine}"></div>`+
-		                    `<div class="${s.shadowMask}"></div>`+
-		                '</div>'+
-		            '</div>'+
-		        '</div>';
-		    document.body.appendChild(_this.mobileSelect);
-
-			//根据数据长度来渲染
-
-			var tempHTML='';
-			for(var i=0; i<wheelsData.length; i++){
-			//列
-				tempHTML += `<div class="${s.wheel}"><ul class="${s.selectContainer}">`;
-				if(_this.jsonType){
-					for(var j=0; j<wheelsData[i].data.length; j++){
-					//行
-						tempHTML += '<li data-id="'+wheelsData[i].data[j][_this.keyMap.id]+'">'+wheelsData[i].data[j][_this.keyMap.value]+'</li>';
-					}
-				}else{
-					for(var j=0; j<wheelsData[i].data.length; j++){
-					//行
-						tempHTML += '<li>'+wheelsData[i].data[j]+'</li>';
-					}
-				}
-				tempHTML += '</ul></div>';
-			}
-			_this.mobileSelect.querySelector(`.${s.wheels}`).innerHTML = tempHTML;
-		},
-
-		addListenerAll: function(){
-			var _this = this;
-			for(var i=0; i<_this.slider.length; i++){
-				//手势监听
-				(function (i) {
-					_this.addListenerWheel(_this.wheel[i], i);
-				})(i);
-			}
-		},
-
-		addListenerWheel: function(theWheel, index){
-			var _this = this;
-			theWheel.addEventListener('touchstart', function () {
-				_this.touch(event, this.firstChild, index);
-			},false);
-			theWheel.addEventListener('touchend', function () {
-				_this.touch(event, this.firstChild, index);
-			},false);
-			theWheel.addEventListener('touchmove', function () {
-				_this.touch(event, this.firstChild, index);
-			},false);
-
-			if(_this.isPC){
-				//如果是PC端则再增加拖拽监听 方便调试
-				theWheel.addEventListener('mousedown', function () {
-					_this.dragClick(event, this.firstChild, index);
-				},false);
-				theWheel.addEventListener('mousemove', function () {
-					_this.dragClick(event, this.firstChild, index);
-				},false);
-				theWheel.addEventListener('mouseup', function () {
-					_this.dragClick(event, this.firstChild, index);
-				},true);
-			}
-		},
-
-		checkDataType: function(){
-			var _this = this;
-			if(typeof(_this.wheelsData[0].data[0])=='object'){
-				_this.jsonType = true;
-			}
-		},
-
-		checkCascade: function(){
-			var _this = this;
-			if(_this.jsonType){
-				var node = _this.wheelsData[0].data;
-				for(var i=0; i<node.length; i++){
-					if(_this.keyMap.childs in node[i] && node[i][_this.keyMap.childs].length > 0){
-						_this.cascade = true;
-						_this.cascadeJsonData = _this.wheelsData[0].data;
-						break;
-					}
-				}
-			}else{
-				_this.cascade = false;
-			}
-		},
-
-		generateArrData: function (targetArr) {
-			var tempArr = [];
-			var keyMap_id = this.keyMap.id;
-			var keyMap_value = this.keyMap.value;
-			for(var i=0; i<targetArr.length; i++){
-				var tempObj = {};
-				tempObj[keyMap_id] = targetArr[i][this.keyMap.id];
-				tempObj[keyMap_value] = targetArr[i][this.keyMap.value];
-				tempArr.push(tempObj);
-			}
-			return tempArr;
-		},
-
-		initCascade: function(){
-			var _this = this;
-			_this.displayJson.push(_this.generateArrData(_this.cascadeJsonData));
-			if(_this.initPosition.length>0){
-				_this.initDeepCount = 0;
-				_this.initCheckArrDeep(_this.cascadeJsonData[_this.initPosition[0]]);
-			}else{
-				_this.checkArrDeep(_this.cascadeJsonData[0]);
-			}
-			_this.reRenderWheels();
-		},
-
-		initCheckArrDeep: function (parent) {
-			var _this = this;
-			if(parent){
-				if (_this.keyMap.childs in parent && parent[_this.keyMap.childs].length > 0) {
-					_this.displayJson.push(_this.generateArrData(parent[_this.keyMap.childs]));
-					_this.initDeepCount++;
-					var nextNode = parent[_this.keyMap.childs][_this.initPosition[_this.initDeepCount]];
-					if(nextNode){
-						_this.initCheckArrDeep(nextNode);
-					}else{
-						_this.checkArrDeep(parent[_this.keyMap.childs][0]);
-					}
-				}
-			}
-		},
-
-		checkArrDeep: function (parent) {
-			//检测子节点深度  修改 displayJson
-			var _this = this;
-			if(parent){
-				if (_this.keyMap.childs in parent && parent[_this.keyMap.childs].length > 0) {
-					_this.displayJson.push(_this.generateArrData(parent[_this.keyMap.childs])); //生成子节点数组
-					_this.checkArrDeep(parent[_this.keyMap.childs][0]);//检测下一个子节点
-				}
-			}
-		},
-
-		checkRange: function(index, posIndexArr){
-			var _this = this;
-			var deleteNum = _this.displayJson.length-1-index;
-			for(var i=0; i<deleteNum; i++){
-				_this.displayJson.pop(); //修改 displayJson
-			}
-			var resultNode;
-			for (var i = 0; i <= index; i++){
-				if (i == 0)
-					resultNode = _this.cascadeJsonData[posIndexArr[0]];
-				else {
-					resultNode = resultNode[_this.keyMap.childs][posIndexArr[i]];
-				}
-			}
-			_this.checkArrDeep(resultNode);
-			//console.log(_this.displayJson);
-			_this.reRenderWheels();
-			_this.fixRowStyle();
-			_this.setCurDistance(_this.resetPosition(index, posIndexArr));
-		},
-
-		resetPosition: function(index, posIndexArr){
-			var _this = this;
-			var tempPosArr = posIndexArr;
-			var tempCount;
-			if(_this.slider.length > posIndexArr.length){
-				tempCount = _this.slider.length - posIndexArr.length;
-				for(var i=0; i<tempCount; i++){
-					tempPosArr.push(0);
-				}
-			}else if(_this.slider.length < posIndexArr.length){
-				tempCount = posIndexArr.length - _this.slider.length;
-				for(var i=0; i<tempCount; i++){
-					tempPosArr.pop();
-				}
-			}
-			for(var i=index+1; i< tempPosArr.length; i++){
-				tempPosArr[i] = 0;
-			}
-			return tempPosArr;
-		},
-		reRenderWheels: function(){
-			var _this = this;
-			//删除多余的wheel
-			if(_this.wheel.length > _this.displayJson.length){
-				var count = _this.wheel.length - _this.displayJson.length;
-				for(var i=0; i<count; i++){
-					_this.wheels.removeChild(_this.wheel[_this.wheel.length-1]);
-				}
-			}
-			for(var i=0; i<_this.displayJson.length; i++){
-			//列
-				(function (i) {
-					var tempHTML='';
-					if(_this.wheel[i]){
-						//console.log('插入Li');
-						for(var j=0; j<_this.displayJson[i].length; j++){
-						//行
-							tempHTML += '<li data-id="'+_this.displayJson[i][j][_this.keyMap.id]+'">'+_this.displayJson[i][j][_this.keyMap.value]+'</li>';
-						}
-						_this.slider[i].innerHTML = tempHTML;
-
-					}else{
-						var tempWheel = document.createElement("div");
-						tempWheel.className = s.wheel;
-						tempHTML = `<ul class="${s.selectContainer}">`;
-						for(var j=0; j<_this.displayJson[i].length; j++){
-						//行
-							tempHTML += '<li data-id="'+_this.displayJson[i][j][_this.keyMap.id]+'">'+_this.displayJson[i][j][_this.keyMap.value]+'</li>';
-						}
-						tempHTML += '</ul>';
-						tempWheel.innerHTML = tempHTML;
-
-						_this.addListenerWheel(tempWheel, i);
-				    	_this.wheels.appendChild(tempWheel);
-					}
-					//_this.·(i);
-				})(i);
-			}
-		},
-
-		updateWheels:function(data){
-			var _this = this;
-			if(_this.cascade){
-				_this.cascadeJsonData = data;
-				_this.displayJson = [];
-				_this.initCascade();
-				if(_this.initPosition.length < _this.slider.length){
-					var diff = _this.slider.length - _this.initPosition.length;
-					for(var i=0; i<diff; i++){
-						_this.initPosition.push(0);
-					}
-				}
-				_this.setCurDistance(_this.initPosition);
-				_this.fixRowStyle();
-			}
-		},
-
-		updateWheel: function(sliderIndex, data){
-			var _this = this;
-			var tempHTML='';
-	    	if(_this.cascade){
-	    		console.error('级联格式不支持updateWheel(),请使用updateWheels()更新整个数据源');
-				return false;
-	    	}
-	    	else if(_this.jsonType){
-				for(var j=0; j<data.length; j++){
-					tempHTML += '<li data-id="'+data[j][_this.keyMap.id]+'">'+data[j][_this.keyMap.value]+'</li>';
-				}
-				_this.wheelsData[sliderIndex] = {data: data};
-	    	}else{
-				for(var j=0; j<data.length; j++){
-					tempHTML += '<li>'+data[j]+'</li>';
-				}
-				_this.wheelsData[sliderIndex] = data;
-	    	}
-			_this.slider[sliderIndex].innerHTML = tempHTML;
-		},
-
-		fixRowStyle: function(){
-			var _this = this;
-			var width = (100/_this.wheel.length).toFixed(2);
-			for(var i=0; i<_this.wheel.length; i++){
-				_this.wheel[i].style.width = width+'%';
-			}
-		},
-
-	    getIndex: function(distance){
-	        return Math.round((2*this.liHeight-distance)/this.liHeight);
-	    },
-
-	    getIndexArr: function(){
-	    	var _this = this;
-	    	var temp = [];
-	    	for(var i=0; i<_this.curDistance.length; i++){
-	    		temp.push(_this.getIndex(_this.curDistance[i]));
-	    	}
-	    	return temp;
-	    },
-
-	    getCurValue: function(){
-	    	var _this = this;
-	    	var temp = [];
-	    	var positionArr = _this.getIndexArr();
-	    	if(_this.cascade){
-		    	for(var i=0; i<_this.wheel.length; i++){
-		    		temp.push(_this.displayJson[i][positionArr[i]]);
-		    	}
-	    	}
-	    	else if(_this.jsonType){
-		    	for(var i=0; i<_this.curDistance.length; i++){
-		    		temp.push(_this.wheelsData[i].data[_this.getIndex(_this.curDistance[i])]);
-		    	}
-	    	}else{
-		    	for(var i=0; i<_this.curDistance.length; i++){
-		    		temp.push(_this.getInnerHtml(i));
-		    	}
-	    	}
-	    	return temp;
-	    },
-
-	    getValue: function(){
-	    	return this.curValue;
-	    },
-
-	    calcDistance: function(index){
-			return 2*this.liHeight-index*this.liHeight;
-	    },
-
-	    setCurDistance: function(indexArr){
-	    	var _this = this;
-	    	var temp = [];
-	    	for(var i=0; i<_this.slider.length; i++){
-	    		temp.push(_this.calcDistance(indexArr[i]));
-	    		_this.movePosition(_this.slider[i],temp[i]);
-	    	}
-	    	_this.curDistance = temp;
-	    },
-
-	    fixPosition: function(distance){
-	        return -(this.getIndex(distance)-2)*this.liHeight;
-	    },
-
-	    movePosition: function(theSlider, distance){
-	        theSlider.style.webkitTransform = 'translate3d(0,' + distance + 'px, 0)';
-	        theSlider.style.transform = 'translate3d(0,' + distance + 'px, 0)';
-	    },
-
-	    locatePosition: function(index, posIndex){
-	    	var _this = this;
-  	    	this.curDistance[index] = this.calcDistance(posIndex);
-  	    	this.movePosition(this.slider[index],this.curDistance[index]);
-	        if(_this.cascade){
-		    	_this.checkRange(index, _this.getIndexArr());
-			}
-	    },
-
-	    updateCurDistance: function(theSlider, index){
-	        if(theSlider.style.transform){
-				this.curDistance[index] = parseInt(theSlider.style.transform.split(',')[1]);
-	        }else{
-				this.curDistance[index] = parseInt(theSlider.style.webkitTransform.split(',')[1]);
-	        }
-	    },
-
-	    getDistance:function(theSlider){
-	    	if(theSlider.style.transform){
-	    		return parseInt(theSlider.style.transform.split(',')[1]);
-	    	}else{
-	    		return parseInt(theSlider.style.webkitTransform.split(',')[1]);
-	    	}
-	    },
-
-	    getInnerHtml: function(sliderIndex){
-	    	var _this = this;
-	    	var index = _this.getIndex(_this.curDistance[sliderIndex]);
-	    	return _this.slider[sliderIndex].getElementsByTagName('li')[index].innerHTML;
-	    },
-
-	    touch: function(event, theSlider, index){
-	    	var _this = this;
-	    	event = event || window.event;
-	    	switch(event.type){
-	    		case "touchstart":
-			        _this.startY = event.touches[0].clientY;
-			        _this.startY = parseInt(_this.startY);
-			        _this.oldMoveY = _this.startY;
-	    			break;
-
-	    		case "touchend":
-
-			        _this.moveEndY = parseInt(event.changedTouches[0].clientY);
-			        _this.offsetSum = _this.moveEndY - _this.startY;
-					_this.oversizeBorder = -(theSlider.getElementsByTagName('li').length-3)*_this.liHeight;
-
-					if(_this.offsetSum == 0){
-						//offsetSum为0,相当于点击事件
-						// 0 1 [2] 3 4
-						var clickOffetNum = parseInt((document.documentElement.clientHeight - _this.moveEndY)/40);
-						if(clickOffetNum!=2){
-							var offset = clickOffetNum - 2;
-							var newDistance = _this.curDistance[index] + (offset*_this.liHeight);
-							if((newDistance <= 2*_this.liHeight) && (newDistance >= _this.oversizeBorder) ){
-								_this.curDistance[index] = newDistance;
-								_this.movePosition(theSlider, _this.curDistance[index]);
-								_this.transitionEnd(_this.getIndexArr(),_this.getCurValue());
-							}
-						}
-					}else{
-						//修正位置
-						_this.updateCurDistance(theSlider, index);
-						_this.curDistance[index] = _this.fixPosition(_this.curDistance[index]);
-						_this.movePosition(theSlider, _this.curDistance[index]);
-
-				        //反弹
-				        if(_this.curDistance[index] + _this.offsetSum > 2*_this.liHeight){
-				            _this.curDistance[index] = 2*_this.liHeight;
-				            setTimeout(function(){
-				                _this.movePosition(theSlider, _this.curDistance[index]);
-				            }, 100);
-
-				        }else if(_this.curDistance[index] + _this.offsetSum < _this.oversizeBorder){
-				            _this.curDistance[index] = _this.oversizeBorder;
-				            setTimeout(function(){
-				                _this.movePosition(theSlider, _this.curDistance[index]);
-				            }, 100);
-				        }
-						_this.transitionEnd(_this.getIndexArr(),_this.getCurValue());
-					}
-
- 			        if(_this.cascade){
-				        _this.checkRange(index, _this.getIndexArr());
-				    }
-
-	    			break;
-
-	    		case "touchmove":
-			        event.preventDefault();
-			        _this.moveY = event.touches[0].clientY;
-			        _this.offset = _this.moveY - _this.oldMoveY;
-
-			        _this.updateCurDistance(theSlider, index);
-			        _this.curDistance[index] = _this.curDistance[index] + _this.offset;
-			        _this.movePosition(theSlider, _this.curDistance[index]);
-			        _this.oldMoveY = _this.moveY;
-	    			break;
-	    	}
-	    },
-
-	    dragClick: function(event, theSlider, index){
-	    	var _this = this;
-	    	event = event || window.event;
-	    	switch(event.type){
-	    		case "mousedown":
-			        _this.startY = event.clientY;
-			        _this.oldMoveY = _this.startY;
-			        _this.clickStatus = true;
-	    			break;
-
-	    		case "mouseup":
-
-			        _this.moveEndY = event.clientY;
-			        _this.offsetSum = _this.moveEndY - _this.startY;
-					_this.oversizeBorder = -(theSlider.getElementsByTagName('li').length-3)*_this.liHeight;
-
-					if(_this.offsetSum == 0){
-						var clickOffetNum = parseInt((document.documentElement.clientHeight - _this.moveEndY)/40);
-						if(clickOffetNum!=2){
-							var offset = clickOffetNum - 2;
-							var newDistance = _this.curDistance[index] + (offset*_this.liHeight);
-							if((newDistance <= 2*_this.liHeight) && (newDistance >= _this.oversizeBorder) ){
-								_this.curDistance[index] = newDistance;
-								_this.movePosition(theSlider, _this.curDistance[index]);
-								_this.transitionEnd(_this.getIndexArr(),_this.getCurValue());
-							}
-						}
-					}else{
-						//修正位置
-						_this.updateCurDistance(theSlider, index);
-						_this.curDistance[index] = _this.fixPosition(_this.curDistance[index]);
-						_this.movePosition(theSlider, _this.curDistance[index]);
-
-						//反弹
-						if(_this.curDistance[index] + _this.offsetSum > 2*_this.liHeight){
-						    _this.curDistance[index] = 2*_this.liHeight;
-						    setTimeout(function(){
-						        _this.movePosition(theSlider, _this.curDistance[index]);
-						    }, 100);
-
-						}else if(_this.curDistance[index] + _this.offsetSum < _this.oversizeBorder){
-						    _this.curDistance[index] = _this.oversizeBorder;
-						    setTimeout(function(){
-						        _this.movePosition(theSlider, _this.curDistance[index]);
-						    }, 100);
-						}
-						_this.transitionEnd(_this.getIndexArr(),_this.getCurValue());
-
-					}
-
-			        _this.clickStatus = false;
- 			        if(_this.cascade){
-				        _this.checkRange(index, _this.getIndexArr());
-			    	}
-	    			break;
-
-	    		case "mousemove":
-			        event.preventDefault();
-			        if(_this.clickStatus){
-				        _this.moveY = event.clientY;
-				        _this.offset = _this.moveY - _this.oldMoveY;
-				        _this.updateCurDistance(theSlider, index);
-				        _this.curDistance[index] = _this.curDistance[index] + _this.offset;
-				        _this.movePosition(theSlider, _this.curDistance[index]);
-				        _this.oldMoveY = _this.moveY;
-			        }
-	    			break;
-	    	}
-	    }
-
+		this.fixRowStyle(); //修正列数
 	};
 
-	if (typeof exports == "object") {
-		module.exports = MobileSelect;
-	} else if (typeof define == "function" && define.amd) {
-		define([], function () {
-			return MobileSelect;
-		})
-	} else {
-		window.MobileSelect = MobileSelect;
-	}
-})();
+	setTitle = string => {
+		this.titleText = string;
+		this.mobileSelect.querySelector(`.${s.title}`).innerHTML = this.titleText;
+	};
+
+	setStyle = config => {
+		if (config.ensureBtnColor) {
+			this.ensureBtn.style.color = config.ensureBtnColor;
+		}
+		if (config.cancelBtnColor) {
+			this.cancelBtn.style.color = config.cancelBtnColor;
+		}
+		if (config.titleColor) {
+			this.title = this.mobileSelect.querySelector(`.${s.title}`);
+			this.title.style.color = config.titleColor;
+		}
+		if (config.textColor) {
+			this.panel = this.mobileSelect.querySelector(`.${s.panel}`);
+			this.panel.style.color = config.textColor;
+		}
+		if (config.titleBgColor) {
+			this.btnBar = this.mobileSelect.querySelector(`.${s.btnBar}`);
+			this.btnBar.style.backgroundColor = config.titleBgColor;
+		}
+		if (config.bgColor) {
+			this.panel = this.mobileSelect.querySelector(`.${s.panel}`);
+			this.shadowMask = this.mobileSelect.querySelector(`.${s.shadowMask}`);
+			this.panel.style.backgroundColor = config.bgColor;
+			this.shadowMask.style.background =
+				"linear-gradient(to bottom, " +
+				config.bgColor +
+				", rgba(255, 255, 255, 0), " +
+				config.bgColor +
+				")";
+		}
+		if (!isNaN(config.maskOpacity)) {
+			this.grayMask = this.mobileSelect.querySelector(`.${s.grayLayer}`);
+			this.grayMask.style.background =
+				"rgba(0, 0, 0, " + config.maskOpacity + ")";
+		}
+	};
+
+	checkIsPC = () => {
+		let sUserAgent = navigator.userAgent.toLowerCase();
+		let bIsIpad = sUserAgent.match(/ipad/i) === "ipad";
+		let bIsIphoneOs = sUserAgent.match(/iphone os/i) === "iphone os";
+		let bIsMidp = sUserAgent.match(/midp/i) === "midp";
+		let bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) === "rv:1.2.3.4";
+		let bIsUc = sUserAgent.match(/ucweb/i) === "ucweb";
+		let bIsAndroid = sUserAgent.match(/android/i) === "android";
+		let bIsCE = sUserAgent.match(/windows ce/i) === "windows ce";
+		let bIsWM = sUserAgent.match(/windows mobile/i) === "windows mobile";
+		if (
+			bIsIpad ||
+			bIsIphoneOs ||
+			bIsMidp ||
+			bIsUc7 ||
+			bIsUc ||
+			bIsAndroid ||
+			bIsCE ||
+			bIsWM
+		) {
+			this.isPC = false;
+		}
+	};
+
+	show = () => {
+		this.mobileSelect.classList.add(s["mobileSelect-show"]);
+		if (typeof this.onShow === "function") {
+			this.onShow(this);
+		}
+	};
+
+	hide = () => {
+		this.mobileSelect.classList.remove(s["mobileSelect-show"]);
+		if (typeof this.onHide === "function") {
+			this.onHide(this);
+		}
+	};
+
+	renderWheels = (wheelsData, cancelBtnText, ensureBtnText) => {
+		let cancelText = cancelBtnText ? cancelBtnText : "取消";
+		let ensureText = ensureBtnText ? ensureBtnText : "确认";
+		this.mobileSelect = document.createElement("div");
+		this.mobileSelect.setAttribute("id", this.id);
+		this.mobileSelect.className = s.mobileSelect;
+		this.mobileSelect.innerHTML = `<div class="${s.grayLayer}"></div> 
+				<div class="${s.content}">
+					<div class="${s.btnBar}"> 
+						<div class="${s.fixWidth}">
+							<div class="${s.cancel}"><span class="${s.btnCancel}">${cancelText}</span></div>
+						<div class="${s.title}"></div>
+						<div class="${s.ensure}"><span class="${s.btnEnsure}">${ensureText}</span></div>
+					</div>
+				</div>
+				<div class="${s.panel}">
+					<div class="${s.fixWidth}">
+						<div class="${s.wheels}">
+							</div>
+							<div class="${s.selectLine}"></div>
+						<div class="${s.shadowMask}"></div>
+					</div>
+				</div>
+			</div>`;
+		document.body.appendChild(this.mobileSelect);
+
+		//根据数据长度来渲染
+
+		let tempHTML = "";
+		for (let i = 0; i < wheelsData.length; i++) {
+			//列
+			tempHTML += `<div class="${s.wheel}"><ul class="${s.selectContainer}">`;
+			if (this.jsonType) {
+				for (let j = 0; j < wheelsData[i].data.length; j++) {
+					//行
+					tempHTML += `<li data-id="${wheelsData[i].data[j][this.keyMap.id]}">${
+						wheelsData[i].data[j][this.keyMap.value]
+					}</li>`;
+				}
+			} else {
+				for (let j = 0; j < wheelsData[i].data.length; j++) {
+					//行
+					tempHTML += `<li>${wheelsData[i].data[j]}</li>`;
+				}
+			}
+			tempHTML += "</ul></div>";
+		}
+		this.mobileSelect.querySelector(`.${s.wheels}`).innerHTML = tempHTML;
+	};
+
+	addListenerAll = () => {
+		for (let i = 0; i < this.slider.length; i++) {
+			//手势监听
+			this.addListenerWheel(this.wheel[i], i);
+		}
+	};
+
+	addListenerWheel = (theWheel, index) => {
+		const _this = this;
+		theWheel.addEventListener(
+			"touchstart",
+			function () {
+				_this.touch(event, this.firstChild, index);
+			},
+			false
+		);
+		theWheel.addEventListener(
+			"touchend",
+			function () {
+				_this.touch(event, this.firstChild, index);
+			},
+			false
+		);
+		theWheel.addEventListener(
+			"touchmove",
+			function () {
+				_this.touch(event, this.firstChild, index);
+			},
+			false
+		);
+
+		if (this.isPC) {
+			//如果是PC端则再增加拖拽监听 方便调试
+			theWheel.addEventListener(
+				"mousedown",
+				function () {
+					_this.dragClick(event, this.firstChild, index);
+				},
+				false
+			);
+			theWheel.addEventListener(
+				"mousemove",
+				function () {
+					_this.dragClick(event, this.firstChild, index);
+				},
+				false
+			);
+			theWheel.addEventListener(
+				"mouseup",
+				function () {
+					_this.dragClick(event, this.firstChild, index);
+				},
+				true
+			);
+		}
+	};
+
+	checkDataType = () => {
+		if (typeof this.wheelsData[0].data[0] === "object") {
+			this.jsonType = true;
+		}
+	};
+
+	checkCascade = () => {
+		if (this.jsonType) {
+			let node = this.wheelsData[0].data;
+			for (let i = 0; i < node.length; i++) {
+				if (
+					this.keyMap.childs in node[i] &&
+					node[i][this.keyMap.childs].length > 0
+				) {
+					this.cascade = true;
+					this.cascadeJsonData = this.wheelsData[0].data;
+					break;
+				}
+			}
+		} else {
+			this.cascade = false;
+		}
+	};
+
+	generateArrData = targetArr => {
+		let tempArr = [];
+		let keyMap_id = this.keyMap.id;
+		let keyMap_value = this.keyMap.value;
+		for (let i = 0; i < targetArr.length; i++) {
+			let tempObj = {};
+			tempObj[keyMap_id] = targetArr[i][this.keyMap.id];
+			tempObj[keyMap_value] = targetArr[i][this.keyMap.value];
+			tempArr.push(tempObj);
+		}
+		return tempArr;
+	};
+
+	initCascade = () => {
+		this.displayJson.push(this.generateArrData(this.cascadeJsonData));
+		if (this.initPosition.length > 0) {
+			this.initDeepCount = 0;
+			this.initCheckArrDeep(this.cascadeJsonData[this.initPosition[0]]);
+		} else {
+			this.checkArrDeep(this.cascadeJsonData[0]);
+		}
+		this.reRenderWheels();
+	};
+
+	initCheckArrDeep = parent => {
+		if (parent) {
+			if (
+				this.keyMap.childs in parent &&
+				parent[this.keyMap.childs].length > 0
+			) {
+				this.displayJson.push(this.generateArrData(parent[this.keyMap.childs]));
+				this.initDeepCount++;
+				let nextNode =
+					parent[this.keyMap.childs][this.initPosition[this.initDeepCount]];
+				if (nextNode) {
+					this.initCheckArrDeep(nextNode);
+				} else {
+					this.checkArrDeep(parent[this.keyMap.childs][0]);
+				}
+			}
+		}
+	};
+
+	checkArrDeep = parent => {
+		//检测子节点深度  修改 displayJson
+		if (parent) {
+			if (
+				this.keyMap.childs in parent &&
+				parent[this.keyMap.childs].length > 0
+			) {
+				this.displayJson.push(this.generateArrData(parent[this.keyMap.childs])); //生成子节点数组
+				this.checkArrDeep(parent[this.keyMap.childs][0]); //检测下一个子节点
+			}
+		}
+	};
+
+	checkRange = (index, posIndexArr) => {
+		let deleteNum = this.displayJson.length - 1 - index;
+		for (let i = 0; i < deleteNum; i++) {
+			this.displayJson.pop(); //修改 displayJson
+		}
+		let resultNode;
+		for (let i = 0; i <= index; i++) {
+			if (i === 0) resultNode = this.cascadeJsonData[posIndexArr[0]];
+			else {
+				resultNode = resultNode[this.keyMap.childs][posIndexArr[i]];
+			}
+		}
+		this.checkArrDeep(resultNode);
+		//console.log(this.displayJson);
+		this.reRenderWheels();
+		this.fixRowStyle();
+		this.setCurDistance(this.resetPosition(index, posIndexArr));
+	};
+
+	resetPosition = (index, posIndexArr) => {
+		let tempPosArr = posIndexArr;
+		let tempCount;
+		if (this.slider.length > posIndexArr.length) {
+			tempCount = this.slider.length - posIndexArr.length;
+			for (let i = 0; i < tempCount; i++) {
+				tempPosArr.push(0);
+			}
+		} else if (this.slider.length < posIndexArr.length) {
+			tempCount = posIndexArr.length - this.slider.length;
+			for (let i = 0; i < tempCount; i++) {
+				tempPosArr.pop();
+			}
+		}
+		for (let i = index + 1; i < tempPosArr.length; i++) {
+			tempPosArr[i] = 0;
+		}
+		return tempPosArr;
+	};
+
+	reRenderWheels = () => {
+		//删除多余的wheel
+		if (this.wheel.length > this.displayJson.length) {
+			let count = this.wheel.length - this.displayJson.length;
+			for (let i = 0; i < count; i++) {
+				this.wheels.removeChild(this.wheel[this.wheel.length - 1]);
+			}
+		}
+		for (let i = 0; i < this.displayJson.length; i++) {
+			//列
+			let tempHTML = "";
+			if (this.wheel[i]) {
+				//console.log('插入Li');
+				for (let j = 0; j < this.displayJson[i].length; j++) {
+					//行
+					tempHTML += `<li data-id="${
+						this.displayJson[i][j][this.keyMap.id]
+					}">${this.displayJson[i][j][this.keyMap.value]}</li>`;
+				}
+				this.slider[i].innerHTML = tempHTML;
+			} else {
+				let tempWheel = document.createElement("div");
+				tempWheel.className = s.wheel;
+				tempHTML = `<ul class="${s.selectContainer}">`;
+				for (let j = 0; j < this.displayJson[i].length; j++) {
+					//行
+					tempHTML += `<li data-id="${
+						this.displayJson[i][j][this.keyMap.id]
+					}">${this.displayJson[i][j][this.keyMap.value]}</li>`;
+				}
+				tempHTML += "</ul>";
+				tempWheel.innerHTML = tempHTML;
+
+				this.addListenerWheel(tempWheel, i);
+				this.wheels.appendChild(tempWheel);
+			}
+		}
+	};
+
+	updateWheels = data => {
+		if (this.cascade) {
+			this.cascadeJsonData = data;
+			this.displayJson = [];
+			this.initCascade();
+			if (this.initPosition.length < this.slider.length) {
+				let diff = this.slider.length - this.initPosition.length;
+				for (let i = 0; i < diff; i++) {
+					this.initPosition.push(0);
+				}
+			}
+			this.setCurDistance(this.initPosition);
+			this.fixRowStyle();
+		}
+	};
+
+	updateWheel = (sliderIndex, data) => {
+		let tempHTML = "";
+		if (this.cascade) {
+			console.error(
+				"级联格式不支持updateWheel(),请使用updateWheels()更新整个数据源"
+			);
+			return false;
+		} else if (this.jsonType) {
+			for (let j = 0; j < data.length; j++) {
+				tempHTML +=
+					'<li data-id="' +
+					data[j][this.keyMap.id] +
+					'">' +
+					data[j][this.keyMap.value] +
+					"</li>";
+			}
+			this.wheelsData[sliderIndex] = { data };
+		} else {
+			for (let j = 0; j < data.length; j++) {
+				tempHTML += "<li>" + data[j] + "</li>";
+			}
+			this.wheelsData[sliderIndex] = data;
+		}
+		this.slider[sliderIndex].innerHTML = tempHTML;
+	};
+
+	fixRowStyle = () => {
+		let width = (100 / this.wheel.length).toFixed(2);
+		for (let i = 0; i < this.wheel.length; i++) {
+			this.wheel[i].style.width = width + "%";
+		}
+	};
+
+	getIndex = distance => {
+		return Math.round((2 * this.liHeight - distance) / this.liHeight);
+	};
+
+	getIndexArr = () => {
+		let temp = [];
+		for (let i = 0; i < this.curDistance.length; i++) {
+			temp.push(this.getIndex(this.curDistance[i]));
+		}
+		return temp;
+	};
+
+	getCurValue = () => {
+		let temp = [];
+		let positionArr = this.getIndexArr();
+		if (this.cascade) {
+			for (let i = 0; i < this.wheel.length; i++) {
+				temp.push(this.displayJson[i][positionArr[i]]);
+			}
+		} else if (this.jsonType) {
+			for (let i = 0; i < this.curDistance.length; i++) {
+				temp.push(this.wheelsData[i].data[this.getIndex(this.curDistance[i])]);
+			}
+		} else {
+			for (let i = 0; i < this.curDistance.length; i++) {
+				temp.push(this.getInnerHtml(i));
+			}
+		}
+		return temp;
+	};
+
+	getValue = () => {
+		return this.curValue;
+	};
+
+	calcDistance = index => {
+		return 2 * this.liHeight - index * this.liHeight;
+	};
+
+	setCurDistance = indexArr => {
+		let temp = [];
+		for (let i = 0; i < this.slider.length; i++) {
+			temp.push(this.calcDistance(indexArr[i]));
+			this.movePosition(this.slider[i], temp[i]);
+		}
+		this.curDistance = temp;
+	};
+
+	fixPosition = distance => {
+		return -(this.getIndex(distance) - 2) * this.liHeight;
+	};
+
+	movePosition = (theSlider, distance) => {
+		theSlider.style.webkitTransform = "translate3d(0," + distance + "px, 0)";
+		theSlider.style.transform = "translate3d(0," + distance + "px, 0)";
+	};
+
+	locatePosition = (index, posIndex) => {
+		this.curDistance[index] = this.calcDistance(posIndex);
+		this.movePosition(this.slider[index], this.curDistance[index]);
+		if (this.cascade) {
+			this.checkRange(index, this.getIndexArr());
+		}
+	};
+
+	updateCurDistance = (theSlider, index) => {
+		if (theSlider.style.transform) {
+			this.curDistance[index] = parseInt(
+				theSlider.style.transform.split(",")[1],
+				10
+			);
+		} else {
+			this.curDistance[index] = parseInt(
+				theSlider.style.webkitTransform.split(",")[1],
+				10
+			);
+		}
+	};
+
+	getDistance = theSlider => {
+		if (theSlider.style.transform) {
+			return parseInt(theSlider.style.transform.split(",")[1], 10);
+		}
+		return parseInt(theSlider.style.webkitTransform.split(",")[1], 10);
+	};
+
+	getInnerHtml = sliderIndex => {
+		let index = this.getIndex(this.curDistance[sliderIndex]);
+		return this.slider[sliderIndex].getElementsByTagName("li")[index].innerHTML;
+	};
+
+	touch = (event, theSlider, index) => {
+		event = event || window.event;
+		switch (event.type) {
+			case "touchstart":
+				this.startY = event.touches[0].clientY;
+				this.startY = parseInt(this.startY, 10);
+				this.oldMoveY = this.startY;
+				break;
+
+			case "touchend":
+				this.moveEndY = parseInt(event.changedTouches[0].clientY, 10);
+				this.offsetSum = this.moveEndY - this.startY;
+				this.oversizeBorder =
+					-(theSlider.getElementsByTagName("li").length - 3) * this.liHeight;
+
+				if (this.offsetSum === 0) {
+					//offsetSum为0,相当于点击事件
+					// 0 1 [2] 3 4
+					let clickOffetNum = parseInt(
+						(document.documentElement.clientHeight - this.moveEndY) / 40,
+						10
+					);
+					if (clickOffetNum !== 2) {
+						let offset = clickOffetNum - 2;
+						let newDistance = this.curDistance[index] + offset * this.liHeight;
+						if (
+							newDistance <= 2 * this.liHeight &&
+							newDistance >= this.oversizeBorder
+						) {
+							this.curDistance[index] = newDistance;
+							this.movePosition(theSlider, this.curDistance[index]);
+							this.transitionEnd(this.getIndexArr(), this.getCurValue());
+						}
+					}
+				} else {
+					//修正位置
+					this.updateCurDistance(theSlider, index);
+					this.curDistance[index] = this.fixPosition(this.curDistance[index]);
+					this.movePosition(theSlider, this.curDistance[index]);
+
+					//反弹
+					if (this.curDistance[index] + this.offsetSum > 2 * this.liHeight) {
+						this.curDistance[index] = 2 * this.liHeight;
+						setTimeout(() => {
+							this.movePosition(theSlider, this.curDistance[index]);
+						}, 100);
+					} else if (
+						this.curDistance[index] + this.offsetSum <
+						this.oversizeBorder
+					) {
+						this.curDistance[index] = this.oversizeBorder;
+						setTimeout(() => {
+							this.movePosition(theSlider, this.curDistance[index]);
+						}, 100);
+					}
+					this.transitionEnd(this.getIndexArr(), this.getCurValue());
+				}
+
+				if (this.cascade) {
+					this.checkRange(index, this.getIndexArr());
+				}
+
+				break;
+
+			case "touchmove":
+				event.preventDefault();
+				this.moveY = event.touches[0].clientY;
+				this.offset = this.moveY - this.oldMoveY;
+
+				this.updateCurDistance(theSlider, index);
+				this.curDistance[index] = this.curDistance[index] + this.offset;
+				this.movePosition(theSlider, this.curDistance[index]);
+				this.oldMoveY = this.moveY;
+				break;
+		}
+	};
+
+	dragClick = (event, theSlider, index) => {
+		event = event || window.event;
+		switch (event.type) {
+			case "mousedown":
+				this.startY = event.clientY;
+				this.oldMoveY = this.startY;
+				this.clickStatus = true;
+				break;
+
+			case "mouseup":
+				this.moveEndY = event.clientY;
+				this.offsetSum = this.moveEndY - this.startY;
+				this.oversizeBorder =
+					-(theSlider.getElementsByTagName("li").length - 3) * this.liHeight;
+
+				if (this.offsetSum === 0) {
+					let clickOffetNum = parseInt(
+						(document.documentElement.clientHeight - this.moveEndY) / 40,
+						10
+					);
+					if (clickOffetNum !== 2) {
+						let offset = clickOffetNum - 2;
+						let newDistance = this.curDistance[index] + offset * this.liHeight;
+						if (
+							newDistance <= 2 * this.liHeight &&
+							newDistance >= this.oversizeBorder
+						) {
+							this.curDistance[index] = newDistance;
+							this.movePosition(theSlider, this.curDistance[index]);
+							this.transitionEnd(this.getIndexArr(), this.getCurValue());
+						}
+					}
+				} else {
+					//修正位置
+					this.updateCurDistance(theSlider, index);
+					this.curDistance[index] = this.fixPosition(this.curDistance[index]);
+					this.movePosition(theSlider, this.curDistance[index]);
+
+					//反弹
+					if (this.curDistance[index] + this.offsetSum > 2 * this.liHeight) {
+						this.curDistance[index] = 2 * this.liHeight;
+						setTimeout(() => {
+							this.movePosition(theSlider, this.curDistance[index]);
+						}, 100);
+					} else if (
+						this.curDistance[index] + this.offsetSum <
+						this.oversizeBorder
+					) {
+						this.curDistance[index] = this.oversizeBorder;
+						setTimeout(() => {
+							this.movePosition(theSlider, this.curDistance[index]);
+						}, 100);
+					}
+					this.transitionEnd(this.getIndexArr(), this.getCurValue());
+				}
+
+				this.clickStatus = false;
+				if (this.cascade) {
+					this.checkRange(index, this.getIndexArr());
+				}
+				break;
+
+			case "mousemove":
+				event.preventDefault();
+				if (this.clickStatus) {
+					this.moveY = event.clientY;
+					this.offset = this.moveY - this.oldMoveY;
+					this.updateCurDistance(theSlider, index);
+					this.curDistance[index] = this.curDistance[index] + this.offset;
+					this.movePosition(theSlider, this.curDistance[index]);
+					this.oldMoveY = this.moveY;
+				}
+				break;
+		}
+	};
+}
+
+export default MobileSelect;

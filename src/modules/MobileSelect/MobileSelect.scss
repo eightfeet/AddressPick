@@ -1,3 +1,7 @@
+.btnEnsure, .btnCancel, .overlay{
+  font-weight: normal;
+}
+
 .mobileSelect {
   position: relative;
   z-index: 0;
@@ -5,6 +9,43 @@
   visibility: hidden;
   -webkit-transition: opacity 0.4s, z-index 0.4s;
   transition: opacity 0.4s, z-index 0.4s;
+
+  .popularcities {
+    background-color: #e4e4e4;
+    padding-bottom: 20px;
+    div {
+        float: left;
+        width: 23%;
+        text-align: center;
+        margin: 8px 5%;
+        color: #888;
+        font-size: 15px;
+    }
+  }
+
+  /***
+  清除浮动
+  clearfix
+  ***/
+  .clearfix:before,
+  .clearfix:after {
+  content: "";
+  display: table;
+  }
+  .clearfix:after {
+  clear: both;
+  }
+  
+  .hottitle {
+    color: rgb(142, 164, 131);
+    text-align: center;
+    font-size: 15px;
+    margin: 0 5% 10px 5%;
+    padding: 15px 0 5px 0;
+    font-weight: normal;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+  }
 }
 .mobileSelect * {
   margin: 0;
@@ -19,7 +60,7 @@
   bottom: 0;
   right: 0;
   background: #eee;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.7);
   z-index: 888;
   display: block;
 }
