@@ -2,7 +2,7 @@ module.exports = {
 	plugins: [
 		require("autoprefixer")({
 			flexbox: "no-2009",
-			browsers: [
+			env: [
 				"Android 2.3",
 				"Android >= 4",
 				"Chrome >= 29",
