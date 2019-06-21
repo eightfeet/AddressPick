@@ -56,15 +56,15 @@
                 }
             }
             
-            for (let indexP = 0; indexP < provinces.length; indexP++) {
+            for (var indexP = 0; indexP < provinces.length; indexP++) {
                 var elementP = provinces[indexP];
                 var elementPChild = elementP.childs;
-                for (let indexCi = 0; indexCi < cities.length; indexCi++) {
+                for (var indexCi = 0; indexCi < cities.length; indexCi++) {
                     var elementCi = cities[indexCi];
                     var elementCiChild = elementCi.childs;
                     if (elementP.id === elementCi.id.slice(0, 2)) {
                         elementPChild.push(elementCi);
-                        for (let indexC = 0; indexC < counties.length; indexC++) {
+                        for (var indexC = 0; indexC < counties.length; indexC++) {
                             var elementC = counties[indexC];
                             if (elementCi.id === elementC.id.slice(0, 4)) {
                                 elementCiChild.push(elementC);
@@ -85,19 +85,19 @@
             }
             var data = wheels[0].data;
             var position = [];
-            for (let indexP = 0; indexP < data.length; indexP++) {
+            for (var indexP = 0; indexP < data.length; indexP++) {
                 var elementP = data[indexP];
                 var elementPChilds = elementP.childs;
                 if (defaultValue[0] === elementP.id) {
                     position.push(indexP);
                 }
-                for (let indexCi = 0; indexCi < elementPChilds.length; indexCi++) {
+                for (var indexCi = 0; indexCi < elementPChilds.length; indexCi++) {
                     var elementCi = elementPChilds[indexCi];
                     var elementCiChilds = elementCi.childs;
                     if (defaultValue[1] === elementCi.id) {
                         position.push(indexCi);
                     }
-                    for (let indexC = 0; indexC < elementCiChilds.length; indexC++) {
+                    for (var indexC = 0; indexC < elementCiChilds.length; indexC++) {
                         var elementC = elementCiChilds[indexC];
                         if (defaultValue[2] === elementC.id) {
                             position.push(indexC);
