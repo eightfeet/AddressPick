@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="http://by-health-cdn.oss-cn-beijing.aliyuncs.com/region/regions.js"></script>
+    <title>AddressPicker</title>
+    <style>
+        #example {
+            line-height: 40px; background-color: rgb(20, 159, 64); width:260px; margin: 30px auto 10px auto; color: #fff; border-radius: 0.2em; text-align: center; 
+        }
+        #exampleshow {
+            line-height: 40px; background-color: rgb(159, 83, 165); width:260px; margin: 30px auto 10px auto; color: #fff; border-radius: 0.2em; text-align: center; 
+        }
+    </style>
+</head>
+<body>
+    <div id="example">click me show AddressPicker</div>
+    <div id="exampleshow">河北 (['19', '1922', '192215'])</div>
+</body>    
+    <script>
+        function formatWheelsData(data){
+            var provinces = [];
+            var cities = [];
+            var counties = [];
+            
+            for (var key in data) {
+                if (data.hasOwnProperty(key)) {
+                    var items = data[key];
+                    for (var el in items) {
+                        if (items.hasOwnProperty(el)) {
+                            var element = items[el];
+                            if (el.length === 2) {
+                                provinces.push({
+                                    id: el,
+                                    value: element,
+                                    childs: []
+                                });
+                            }
+                            if (el.length === 4) {
+                                cities.push({
+                                    id: el,
+                                    value: element,
+                                    childs: []
+                                });
+                            }
+                            if (el.length === 6) {
+                                counties.push({
+                                    id: el,
+                                    value: element
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            
+            for (var indexP = 0; indexP < provinces.length; indexP++) {
+                var elementP = provinces[indexP];
+                var elementPChild = elementP.childs;
+                for (var indexCi = 0; indexCi < cities.length; indexCi++) {
+                    var elementCi = cities[indexCi];
+                    var elementCiChild = elementCi.childs;
+                    if (elementP.id === elementCi.id.slice(0, 2)) {
+                        elementPChild.push(elementCi);
+                        for (var indexC = 0; indexC < counties.length; indexC++) {
+                            var elementC = counties[indexC];
+                            if (elementCi.id === elementC.id.slice(0, 4)) {
+                                elementCiChild.push(elementC);
+                            }
+                        }
+                    }
+                }
+                
+            }
+
+            return provinces;
+        }
+
+        function getPositionByDefaultValue(defaultData, wheels){
+            var defaultValue = defaultData || [];
+            if (!Array.isArray(defaultValue) || defaultValue.length < 1) {
+                return;
+            }
+            var data = wheels[0].data;
+            var position = [];
+            for (var indexP = 0; indexP < data.length; indexP++) {
+                var elementP = data[indexP];
+                var elementPChilds = elementP.childs;
+                if (defaultValue[0] === elementP.id) {
+                    position.push(indexP);
+                }
+                for (var indexCi = 0; indexCi < elementPChilds.length; indexCi++) {
+                    var elementCi = elementPChilds[indexCi];
+                    var elementCiChilds = elementCi.childs;
+                    if (defaultValue[1] === elementCi.id) {
+                        position.push(indexCi);
+                    }
+                    for (var indexC = 0; indexC < elementCiChilds.length; indexC++) {
+                        var elementC = elementCiChilds[indexC];
+                        if (defaultValue[2] === elementC.id) {
+                            position.push(indexC);
+                            break;
+                        }
+                    }
+                }
+            }
+            return position;
+        }
+
+        var regions = formatWheelsData(window.BY_HEALTH_REGIONS);
+        var popularCities = [
+            {name: '北京', id: ['12', '1210']},
+            {name: '上海', id: ['34', '3410']},
+            {name: '广州', id: ['15', '1513']},
+            {name: '深圳', id: ['15', '1524']},
+            {name: '杭州', id: ['43', '4311']},
+            {name: '南京', id: ['26', '2613']},
+            {name: '天津', id: ['37', '3710']},
+            {name: '苏州', id: ['26', '2616']},
+            {name: '长沙', id: ['24', '2411']},
+            {name: '重庆', id: ['13', '1310']},
+            {name: '成都', id: ['32', '3212']}
+        ];
+
+        window.newPicker = new ___AddressPicker___({
+            id: '555666',
+            trigger: '#example', // 触发Dom
+            // title: '请选择省市区', // 设置标题
+            // defaultValue: ['15', '1513', '151315'], // 默认选择的地址
+            triggerDisplayData: true, // 是否在"触发Dom"中显示已选数据 默认false(mobile-select中默认true)
+            regions: regions, // 原始数据
+            popularCities: popularCities,
+            // callback 确定后的回调，返回两个参数值，indexArr, data (分别代表当前选中wheels的位置和值)。
+            // onConfirm: function(indexArr, data){
+            //     console.log('callback', indexArr, data);
+            // },
+            // 取消后的回调
+            onCancel: function(indexArr, data){
+                console.log('取消', indexArr, data);
+            },
+            // 控制样式
+            style: {
+                // 确定按钮
+                confirmBtn: {
+                    backgroundColor: '#7fb581',
+                    color: '#fff',
+                    padding: '5px 10px',
+                    borderRadius: '5px'
+                },
+                // 取消按钮
+                cancelBtn: {
+                    backgroundColor: '#eee',
+                    padding: '5px 10px',
+                    borderRadius: '5px'
+                },
+                // 半透明覆盖层
+                overlay: {
+                },
+                // 热门城市
+                popularCities: {
+                    backgroundColor: '#efefef',
+                },
+                popularCitiesTitle: {
+                },
+                popularCitiesItem: {
+                }
+            }
+        });
+
+        document.getElementById('exampleshow').onclick = function(){
+            // 更新省市区位置 arguments:([省id, 市id, 区id], callback)
+            window.newPicker.upDatePicker(['19', '1922', '192215'], function(){
+                // 显示AddressPicker
+                window.newPicker.showPicker();
+            })
+        };
+
+    </script>
+</html>
