@@ -17,7 +17,7 @@
             line-height: 40px; background-color: rgb(20, 150, 159); width:260px; margin: 30px auto 10px auto; color: #fff; border-radius: 0.2em; text-align: center; 
         }
         #uitest {
-            /* display: none; */
+            display: none;
         }
     </style>
 </head>
@@ -25,6 +25,8 @@
     <div id="example">click me show AddressPicker</div>
     <div id="exampleshow">河北 (['19', '1922', '192215'])</div>
     <div id="exampleMobile">mobile-select</div>
+    <br />
+    <div style="text-align: center"><a href="https://github.com/eightfeet/AddressPicker/blob/master/README.md">Documents</a></div>
     <ul id="uitest">
         <li id="onConfirm"></li>
         <li id="onCancel"></li>
@@ -124,7 +126,6 @@
         }
 
         var regions = formatWheelsData(window.BY_HEALTH_REGIONS);
-        console.log(regions);
         var popularCities = [
             {name: '北京', id: ['12', '1210']},
             {name: '上海', id: ['34', '3410']},
