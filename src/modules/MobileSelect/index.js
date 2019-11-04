@@ -4,6 +4,9 @@ function getClass(dom, string) {
 	return dom.getElementsByClassName(string);
 }
 
+/**
+ * id, wheels, keyMap, cancelBtnText, ensureBtnText, trigger
+ */
 class MobileSelect {
 	constructor(config) {
 		const stamp = (new Date()).getTime();
