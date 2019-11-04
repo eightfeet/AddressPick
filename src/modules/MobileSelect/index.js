@@ -5,7 +5,27 @@ function getClass(dom, string) {
 }
 
 /**
- * id, wheels, keyMap, cancelBtnText, ensureBtnText, trigger
+ * id,
+ * wheels: [{data:[]}],
+ * keyMap,
+ * cancelBtnText,
+ * ensureBtnText,
+ * trigger,
+ * onConfirm,
+ * onCancel,
+ * transitionEnd,
+ * onShow,
+ * onHide,
+ * position
+ * title,
+ * triggerDisplayData,
+ * ensureBtnColor,
+ * cancelBtnColor,
+ * titleColor,
+ * textColor,
+ * titleBgColor,
+ * bgColor,
+ * maskOpacity
  */
 class MobileSelect {
 	constructor(config) {
@@ -143,7 +163,7 @@ class MobileSelect {
 		this.titleText = string;
 		this.mobileSelect.querySelector(`.${s.title}`).innerHTML = this.titleText;
 	};
-
+	
 	setStyle = config => {
 		if (config.ensureBtnColor) {
 			this.ensureBtn.style.color = config.ensureBtnColor;

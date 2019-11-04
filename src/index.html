@@ -13,11 +13,25 @@
         #exampleshow {
             line-height: 40px; background-color: rgb(159, 83, 165); width:260px; margin: 30px auto 10px auto; color: #fff; border-radius: 0.2em; text-align: center; 
         }
+        #exampleMobile {
+            line-height: 40px; background-color: rgb(20, 150, 159); width:260px; margin: 30px auto 10px auto; color: #fff; border-radius: 0.2em; text-align: center; 
+        }
+        #uitest {
+            /* display: none; */
+        }
     </style>
 </head>
 <body>
     <div id="example">click me show AddressPicker</div>
     <div id="exampleshow">河北 (['19', '1922', '192215'])</div>
+    <div id="exampleMobile">mobile-select</div>
+    <ul id="uitest">
+        <li id="onConfirm"></li>
+        <li id="onCancel"></li>
+        <li id="transitionEnd"></li>
+        <li id="onShow"></li>
+        <li id="onHide"></li>
+    </ul>
 </body>    
     <script>
         function formatWheelsData(data){
@@ -110,6 +124,7 @@
         }
 
         var regions = formatWheelsData(window.BY_HEALTH_REGIONS);
+        console.log(regions);
         var popularCities = [
             {name: '北京', id: ['12', '1210']},
             {name: '上海', id: ['34', '3410']},
@@ -167,6 +182,88 @@
                 popularCitiesItem: {
                 }
             }
+        });
+
+        var msData = [{
+            data: [
+                {date:'1月', val: 1, childs: [
+                    {date: '1日', val: 1},
+                    {date: '2日', val: 2},
+                    {date: '3日', val: 3},
+                    {date: '4日', val: 4},
+                    {date: '5日', val: 5}
+                ]},
+                {date:'2月', val: 2},
+                {date:'3月', val: 3},
+                {date:'4月', val: 4},
+                {date:'5月', val: 5},
+                {date:'6月', val: 6},
+                {date:'7月', val: 7},
+                {date:'8月', val: 8},
+                {date:'9月', val: 9},
+                {date:'10月', val: 10},
+                {date:'11月', val: 11},
+                {date:'12月', val: 12}
+            ]
+        }]
+
+        /**
+         * id,
+         * wheels: [{data:[]}],
+         * keyMap,
+         * cancelBtnText,
+         * ensureBtnText,
+         * trigger,
+         * onConfirm,
+         * onCancel,
+         * transitionEnd,
+         * onShow,
+         * onHide,
+         * position
+         * title,
+         * triggerDisplayData,
+         * ensureBtnColor,
+         * cancelBtnColor,
+         * titleColor,
+         * textColor,
+         * titleBgColor,
+         * bgColor,
+         * maskOpacity
+         */
+
+        window.newMobileSelect = new ___picker___.MobileSelect({
+            id:'mobileId',
+            wheels:msData,
+            trigger: '#exampleMobile',
+            keyMap: {id: 'val', value: 'date', childs: 'childs'},
+            cancelBtnText: 'cancel',
+            ensureBtnText: 'ensure',
+            triggerDisplayData: true,
+            onConfirm: function(a, b){
+                document.getElementById('onConfirm').innerText='onConfirm'+a[0]+b[0].date;
+            },
+            onCancel: function(a, b){
+                if (a.length === 0) return;
+                document.getElementById('onCancel').innerText='onCancel'+a[0]+b[0].date;
+            },
+            transitionEnd: function(a, b){
+                document.getElementById('transitionEnd').innerText='transitionEnd'+a[0]+b[0].date;
+            },
+            onShow: function(e){
+                document.getElementById('onShow').innerText='onShow';
+            },
+            onHide: function(e){
+                document.getElementById('onHide').innerText='onHide';
+            },
+            position: [3],
+            title: '选择日期',
+            ensureBtnColor: '#000',
+            cancelBtnColor: '#000',
+            textColor: 'red',
+            titleColor: '#000',
+            titleBgColor: '#fff',
+            bgColor: '#fff',
+            maskOpacity: 0.5
         });
 
         document.getElementById('exampleshow').onclick = function(){
