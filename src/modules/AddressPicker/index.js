@@ -3,10 +3,11 @@ import { getPositionByDefaultValue } from '~/utils/regionsWheelsHelper.js';
 import { inlineStyle } from '~/utils/tools';
 import m from './../MobileSelect/MobileSelect.scss';
 
-const stamp = new Date().getTime();
+
 
 class AddressPicker extends MobileSelect {
 	constructor(data) {
+		const stamp = new Date().getTime();
 		const { defaultValue, regions, style, popularCities, id } = data || {};
 		const wheels = [
 			{ data: regions } // 原始数据
@@ -16,7 +17,7 @@ class AddressPicker extends MobileSelect {
 			...data,
 			position: getPositionByDefaultValue(defaultValue, wheels),
 			wheels,
-			id: id || `AddressPicker-${stamp}${window.Math.floor(
+			id: id || `AddressPicker${stamp}-${window.Math.floor(
 				window.Math.random() * 100
 			)}`
 		};

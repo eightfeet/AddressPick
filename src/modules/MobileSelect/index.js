@@ -6,6 +6,7 @@ function getClass(dom, string) {
 
 class MobileSelect {
 	constructor(config) {
+		const stamp = (new Date()).getTime();
 		const { wheels } = config;
 		this.mobileSelect;
 		this.wheelsData = wheels;
@@ -25,7 +26,7 @@ class MobileSelect {
 		this.curDistance = [];
 		this.clickStatus = false;
 		this.isPC = true;
-		this.id = config.id;
+		this.id = config.id || `MobileSelect${stamp}-${window.Math.floor(window.Math.random()*100)}`;
 		this.init(config);
 	}
 
@@ -131,6 +132,10 @@ class MobileSelect {
 		this.fixRowStyle(); //修正列数
 	};
 
+	distroy = () => {
+
+	}
+
 	setTitle = string => {
 		this.titleText = string;
 		this.mobileSelect.querySelector(`.${s.title}`).innerHTML = this.titleText;
@@ -217,21 +222,21 @@ class MobileSelect {
 		this.mobileSelect = document.createElement('div');
 		this.mobileSelect.setAttribute('id', this.id);
 		this.mobileSelect.className = s.mobileSelect;
-		this.mobileSelect.innerHTML = `<div class="${s.grayLayer} ${s.overlay}"></div> 
-				<div class="${s.content}">
-					<div class="${s.btnBar}"> 
+		this.mobileSelect.innerHTML = `<div class="${s.grayLayer} ${s.overlay} ${this.id}_overly"></div> 
+				<div class="${s.content} ${this.id}_content">
+					<div class="${s.btnBar} ${this.id}_btnbar"> 
 						<div class="${s.fixWidth}">
-							<div class="${s.cancel}"><span class="${s.btnCancel}">${cancelText}</span></div>
+							<div class="${s.cancel}"><span class="${s.btnCancel} ${this.id}_btncancel">${cancelText}</span></div>
 						<div class="${s.title}"></div>
-						<div class="${s.ensure}"><span class="${s.btnEnsure}">${ensureText}</span></div>
+						<div class="${s.ensure}"><span class="${s.btnEnsure} ${this.id}_btnensure">${ensureText}</span></div>
 					</div>
 				</div>
-				<div class="${s.panel}">
+				<div class="${s.panel} ${this.id}_panel">
 					<div class="${s.fixWidth}">
-						<div class="${s.wheels}">
+						<div class="${s.wheels} ${this.id}_wheels">
 							</div>
-							<div class="${s.selectLine}"></div>
-						<div class="${s.shadowMask}"></div>
+							<div class="${s.selectLine} ${this.id}_selectline"></div>
+						<div class="${s.shadowMask} ${this.id}_shadowmask"></div>
 					</div>
 				</div>
 			</div>`;
@@ -242,7 +247,7 @@ class MobileSelect {
 		let tempHTML = '';
 		for (let i = 0; i < wheelsData.length; i++) {
 			//列
-			tempHTML += `<div class="${s.wheel}"><ul class="${s.selectContainer}">`;
+			tempHTML += `<div class="${s.wheel} ${this.id}_wheel"><ul class="${s.selectContainer} ${this.id}_selectcontainer">`;
 			if (this.jsonType) {
 				for (let j = 0; j < wheelsData[i].data.length; j++) {
 					//行

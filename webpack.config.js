@@ -10,10 +10,10 @@ module.exports = () => ({
 	entry: './src/index.js',
 	context: path.resolve(__dirname),
 	output: {
-		library: '___AddressPicker___',
+		library: '___picker___',
 		libraryTarget: 'umd',
 		path: path.resolve(__dirname, 'dist'),
-		filename: 'addresspicker.js',
+		filename: 'picker.js',
 		publicPath: './'
 	},
 	module: {
