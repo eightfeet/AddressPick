@@ -1,5 +1,6 @@
 import puppeteer from 'puppeteer';
 import '@babel/runtime/regenerator';
+import {installMouseHelper} from './install-mouse-helper';
 
 /**
  * 2、end2end， yarn start
@@ -9,9 +10,11 @@ describe('MobileSelect', () => {
 	// end2end测试
 	it('MobileSelect end2end test', async () => {
 		const browser = await puppeteer.launch({
-			headless: true
+			headless: false,
+			slowMo: 100
 		});
 		const page = await browser.newPage();
+		await installMouseHelper(page);
 		await page.goto('http://localhost:9000/');
 		await page.click('div#exampleMobile');
 
@@ -39,15 +42,11 @@ describe('MobileSelect', () => {
 		// title 设置正常
 		const titleText = await page.$eval('.mobileId_title', el => el.outerText);
 		expect(titleText).toBe('选择日期');
-		
+		await page.waitFor(200);
 		// 点击交互
-		// const title = await page.evaluate(() => {
-		// 	document.body.onclick = function(e){
-		// 		return e;
-		// 	};
-		// 	return document.body.click();
-		// });
-		// console.log('??', title);
+		await page.click('.mobileId_selectcontainer_2');
+		// await page.evaluate(()=>document.querySelector('.mobileId_selectcontainer_2').click());
+		
 
 		// const wheelsPosition2 = await page.$eval('.mobileId_selectcontainer', el => el.outerHTML);
 		// console.log('wheelsPosition2', wheelsPosition2);
