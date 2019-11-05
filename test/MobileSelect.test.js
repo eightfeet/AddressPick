@@ -40,6 +40,18 @@ describe('MobileSelect', () => {
 		const titleText = await page.$eval('.mobileId_title', el => el.outerText);
 		expect(titleText).toBe('选择日期');
 		
+		// 点击交互
+		// const title = await page.evaluate(() => {
+		// 	document.body.onclick = function(e){
+		// 		return e;
+		// 	};
+		// 	return document.body.click();
+		// });
+		// console.log('??', title);
+
+		// const wheelsPosition2 = await page.$eval('.mobileId_selectcontainer', el => el.outerHTML);
+		// console.log('wheelsPosition2', wheelsPosition2);
+		// await page.waitForSelector('#airplaneSubmit');
 		
 	}, 10000);
 });

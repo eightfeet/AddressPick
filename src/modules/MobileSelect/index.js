@@ -488,7 +488,7 @@ class MobileSelect {
 			} else {
 				let tempWheel = document.createElement('div');
 				tempWheel.className = s.wheel;
-				tempHTML = `<ul class="${s.selectContainer}">`;
+				tempHTML = `<ul class="${s.selectContainer} ${this.id}_selectcontainer">`;
 				for (let j = 0; j < this.displayJson[i].length; j++) {
 					//行
 					tempHTML += `<li data-id="${
