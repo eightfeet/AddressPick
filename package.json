@@ -1,8 +1,8 @@
 {
-  "name": "@eightfeet/addresspicker",
+  "name": "@eightfeet/picker",
   "version": "2.0.0",
   "description": "",
-  "main": "./dist/addresspicker.js",
+  "main": "./dist/picker.js",
   "files": [
     "dist"
   ],
