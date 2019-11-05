@@ -250,7 +250,7 @@ class MobileSelect {
 					<div class="${s.btnBar} ${this.id}_btnbar"> 
 						<div class="${s.fixWidth}">
 							<div class="${s.cancel}"><span class="${s.btnCancel} ${this.id}_btncancel">${cancelText}</span></div>
-						<div class="${s.title}"></div>
+						<div class="${s.title} ${this.id}_title"></div>
 						<div class="${s.ensure}"><span class="${s.btnEnsure} ${this.id}_btnensure">${ensureText}</span></div>
 					</div>
 				</div>
