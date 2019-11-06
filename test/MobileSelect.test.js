@@ -11,11 +11,12 @@ describe('MobileSelect', () => {
 	it('MobileSelect end2end test', async () => {
 		const browser = await puppeteer.launch({
 			headless: false,
-			slowMo: 100
+			args: ['--window-size=800,800']
 		});
 		const page = await browser.newPage();
 		await installMouseHelper(page);
 		await page.goto('http://localhost:9000/');
+
 		await page.click('div#exampleMobile');
 
 		// trigger, onShow 正常
@@ -30,7 +31,7 @@ describe('MobileSelect', () => {
 		// id 设置正常
 		const idSet = await page.$eval('#mobileId', el => el.getAttribute('class'));
 		expect(!!idSet).toBe(true);
-
+		
 		// cancelBtnText 取消按钮设置正常
 		const cancelBtnText = await page.$eval('.mobileId_btncancel', el => el.outerText);
 		expect(cancelBtnText).toBe('cancel');
@@ -42,16 +43,23 @@ describe('MobileSelect', () => {
 		// title 设置正常
 		const titleText = await page.$eval('.mobileId_title', el => el.outerText);
 		expect(titleText).toBe('选择日期');
-		await page.waitFor(200);
-		// 点击交互
-		await page.click('.mobileId_selectcontainer_2');
-		// await page.evaluate(()=>document.querySelector('.mobileId_selectcontainer_2').click());
-		
+		await page.waitFor(2000);
 
-		// const wheelsPosition2 = await page.$eval('.mobileId_selectcontainer', el => el.outerHTML);
-		// console.log('wheelsPosition2', wheelsPosition2);
-		// await page.waitForSelector('#airplaneSubmit');
+		// 点击交互
+		await page.evaluate(() => document.getElementsByClassName('mobileId_selectcontainer')[0].children[1].setAttribute('id', 'wheelsposition2'));
 		
-	}, 10000);
+		// 点击二月检查滚动是否正常
+		await page.click('#wheelsposition2');
+		const wheelsPosition2 = await page.$eval('.mobileId_selectcontainer', el => el.getAttribute('style'));
+		expect(wheelsPosition2.indexOf('40px') !== -1).toBe(true);
+		await page.waitFor(2000);
+
+		// 验证点击确定后取之正常
+		await page.click('.mobileId_btnensure');
+		const february = await page.$eval('#exampleMobile', el => el.outerText);
+		expect(february).toBe('2月');
+
+		
+	}, 100000);
 });
 

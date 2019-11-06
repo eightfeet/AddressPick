@@ -281,7 +281,7 @@ class MobileSelect {
 			} else {
 				for (let j = 0; j < wheelsData[i].data.length; j++) {
 					//行
-					tempHTML += `<li class="${this.id}_selectcontainer_${j}">${wheelsData[i].data[j]}</li>`;
+					tempHTML += `<li>${wheelsData[i].data[j]}</li>`;
 				}
 			}
 			tempHTML += '</ul></div>';
@@ -480,7 +480,7 @@ class MobileSelect {
 				//console.log('插入Li');
 				for (let j = 0; j < this.displayJson[i].length; j++) {
 					//行
-					tempHTML += `<li class="${this.id}_selectcontainer_${j}" data-id="${
+					tempHTML += `<li data-id="${
 						this.displayJson[i][j][this.keyMap.id]
 					}">${this.displayJson[i][j][this.keyMap.value]}</li>`;
 				}
@@ -530,7 +530,7 @@ class MobileSelect {
 		} else if (this.jsonType) {
 			for (let j = 0; j < data.length; j++) {
 				tempHTML +=
-					`<li class="${this.id}_selectcontainer_${j}" data-id="
+					`<li data-id="
 					${data[j][this.keyMap.id]}">
 					${data[j][this.keyMap.value]}
 					</li>`;
@@ -538,7 +538,7 @@ class MobileSelect {
 			this.wheelsData[sliderIndex] = { data };
 		} else {
 			for (let j = 0; j < data.length; j++) {
-				tempHTML += `<li class="${this.id}_selectcontainer_${j}">${data[j]}</li>`;
+				tempHTML += `<li>${data[j]}</li>`;
 			}
 			this.wheelsData[sliderIndex] = data;
 		}
