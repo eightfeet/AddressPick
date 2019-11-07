@@ -1,6 +1,6 @@
 import s from './MobileSelect.scss';
 import { getPositionByDefaultValue } from '~/utils/regionsWheelsHelper.js';
-import { createDom } from '~/utils/htmlFactory';
+import { createDom, isPC } from '~/utils/htmlFactory';
 
 import template from './template';
 
@@ -10,10 +10,11 @@ function getClass(dom, string) {
 
 class MobileSelect {
 	constructor(config) {
-		const { wheels } = config;
+		const { wheels, title } = config;
 		const stamp = (new Date()).getTime();
 
 		this.id = config.id || `MobileSelect${stamp}-${window.Math.floor(window.Math.random()*100)}`;
+		this.titleText = title || '';
 		this.mobileSelect;
 		this.wheelsData = wheels;
 		this.jsonType = false;
@@ -31,7 +32,7 @@ class MobileSelect {
 		this.oversizeBorder;
 		this.curDistance = [];
 		this.clickStatus = false;
-		this.isPC = true;
+		this.isPC = isPC;
 		this.init(config);
 	}
 
@@ -49,7 +50,8 @@ class MobileSelect {
 		this.renderWheels(
 			this.wheelsData,
 			config.cancelBtnText,
-			config.ensureBtnText
+			config.ensureBtnText,
+			config.titleText
 		);
 		this.trigger = document.querySelector(config.trigger);
 		if (!this.trigger) {
@@ -81,8 +83,7 @@ class MobileSelect {
 		if (config.position && config.position.length > 0) {
 			this.initPosition = config.position;
 		}
-
-		this.titleText = config.title || '';
+		
 		this.connector = config.connector || ' ';
 		this.triggerDisplayData = !(
 			typeof config.triggerDisplayData === 'undefined'
@@ -90,8 +91,6 @@ class MobileSelect {
 			? config.triggerDisplayData
 			: true;
 		this.trigger.style.cursor = 'pointer';
-		this.setTitle(this.titleText);
-		this.checkIsPC();
 		this.checkCascade();
 		this.addListenerAll();
 		if (this.cascade) {
@@ -146,35 +145,6 @@ class MobileSelect {
 		this.fixRowStyle(); //修正列数
 	};
 
-	setTitle = string => {
-		this.titleText = string;
-		this.mobileSelect.querySelector(`.${s.title}`).innerHTML = this.titleText;
-	};
-
-	checkIsPC = () => {
-		let sUserAgent = navigator.userAgent.toLowerCase();
-		let bIsIpad = sUserAgent.match(/ipad/i) === 'ipad';
-		let bIsIphoneOs = sUserAgent.match(/iphone os/i) === 'iphone os';
-		let bIsMidp = sUserAgent.match(/midp/i) === 'midp';
-		let bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) === 'rv:1.2.3.4';
-		let bIsUc = sUserAgent.match(/ucweb/i) === 'ucweb';
-		let bIsAndroid = sUserAgent.match(/android/i) === 'android';
-		let bIsCE = sUserAgent.match(/windows ce/i) === 'windows ce';
-		let bIsWM = sUserAgent.match(/windows mobile/i) === 'windows mobile';
-		if (
-			bIsIpad ||
-			bIsIphoneOs ||
-			bIsMidp ||
-			bIsUc7 ||
-			bIsUc ||
-			bIsAndroid ||
-			bIsCE ||
-			bIsWM
-		) {
-			this.isPC = false;
-		}
-	};
-
 	show = () => {
 		this.mobileSelect.children[0].classList.add(s['mobileSelect-show']);
 		if (typeof this.onShow === 'function') {
@@ -193,7 +163,14 @@ class MobileSelect {
 		let cancelText = cancelBtnText ? cancelBtnText : '取消';
 		let ensureText = ensureBtnText ? ensureBtnText : '确认';
 		createDom(
-			template({wheelsData, cancelText, ensureText, keyMap: this.keyMap, id: this.id}, this.jsonType),
+			template({
+				wheelsData,
+				cancelText,
+				ensureText,
+				titleText: this.titleText,
+				keyMap: this.keyMap,
+				id: this.id
+			}, this.jsonType),
 			this.id
 		);
 	};
@@ -705,13 +682,9 @@ class MobileSelect {
 		}
 	};
 	
-	setPositionById = data => {
-		this.initPosition = getPositionByDefaultValue(data, this.wheelsData[0].data, this.keyMap);
-	};
-
 	updatePicker = (data, callback) => {
 		const willData = this.wheelsData[0].data;
-		this.setPositionById(data);
+		this.initPosition = getPositionByDefaultValue(data, this.wheelsData[0].data, this.keyMap);
 		this.updateWheels(willData);
 		window.setTimeout(() => callback && callback(), 100);
 	};
