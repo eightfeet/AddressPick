@@ -58,33 +58,25 @@ export function formatWheelsData(data){
 	return provinces;
 }
 
-export function getPositionByDefaultValue(defaultData, wheels){
-	const defaultValue = defaultData || [];
-	if (!Array.isArray(defaultValue) || defaultValue.length < 1) {
-		return;
-	}
-	const data = wheels[0].data;
-	const position = [];
-	for (let indexP = 0; indexP < data.length; indexP++) {
-		const elementP = data[indexP];
-		const elementPChilds = elementP.childs;
-		if (defaultValue[0] === elementP.id) {
-			position.push(indexP);
-		}
-		for (let indexCi = 0; indexCi < elementPChilds.length; indexCi++) {
-			const elementCi = elementPChilds[indexCi];
-			const elementCiChilds = elementCi.childs;
-			if (defaultValue[1] === elementCi.id) {
-				position.push(indexCi);
+export function getPositionByDefaultValue(defaultval, data, keyMap) {
+	const position =[];
+	let deepth = 0;
+
+	const loop = (array) => {
+		array.forEach((element, index) => {
+			if (deepth >= defaultval.length) {
+				return;
 			}
-			for (let indexC = 0; indexC < elementCiChilds.length; indexC++) {
-				const elementC = elementCiChilds[indexC];
-				if (defaultValue[2] === elementC.id) {
-					position.push(indexC);
-					break;
+			if (defaultval[deepth] === element[keyMap.id]) {
+				position.push(index);
+				deepth++;
+				if (Array.isArray(element[keyMap.childs]) && element[keyMap.childs].length > 0) {
+					loop(element[keyMap.childs]);
 				}
 			}
-		}
-	}
+		});
+	};
+
+	loop(data);
 	return position;
 }

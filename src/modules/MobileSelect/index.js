@@ -1,4 +1,5 @@
 import s from './MobileSelect.scss';
+import { getPositionByDefaultValue } from '~/utils/regionsWheelsHelper.js';
 
 function getClass(dom, string) {
 	return dom.getElementsByClassName(string);
@@ -89,7 +90,16 @@ class MobileSelect {
 		this.transitionEnd = config.transitionEnd || function () { };
 		this.onShow = config.onShow || function () { };
 		this.onHide = config.onHide || function () { };
-		this.initPosition = config.position || [];
+		this.initPosition = [];
+
+		if (config.defaultValue && config.defaultValue.length > 0) {
+			this.initPosition = getPositionByDefaultValue(config.defaultValue, this.wheelsData[0].data, this.keyMap);
+		}
+
+		if (config.position && config.position.length > 0) {
+			this.initPosition = config.position;
+		}
+
 		this.titleText = config.title || '';
 		this.connector = config.connector || ' ';
 		this.triggerDisplayData = !(
@@ -794,6 +804,24 @@ class MobileSelect {
 				}
 				break;
 		}
+	};
+	
+	setPositionById = data => {
+		this.initPosition = getPositionByDefaultValue(data, this.wheelsData[0].data, this.keyMap);
+	};
+
+	updatePicker = (data, callback) => {
+		const willData = this.wheelsData[0].data;
+		this.setPositionById(data);
+		this.updateWheels(willData);
+		window.setTimeout(() => callback && callback(), 100);
+	};
+
+	showPicker = data => {
+		if (Array.isArray(data) && data.length >= 2) {
+			this.updatePicker(data);
+		}
+		this.show();
 	};
 }
 

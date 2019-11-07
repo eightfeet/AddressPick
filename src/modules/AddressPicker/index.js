@@ -1,5 +1,4 @@
 import MobileSelect from './../MobileSelect';
-import { getPositionByDefaultValue } from '~/utils/regionsWheelsHelper.js';
 import { inlineStyle } from '~/utils/tools';
 import m from './../MobileSelect/MobileSelect.scss';
 
@@ -8,14 +7,13 @@ import m from './../MobileSelect/MobileSelect.scss';
 class AddressPicker extends MobileSelect {
 	constructor(data) {
 		const stamp = new Date().getTime();
-		const { defaultValue, regions, style, popularCities, id } = data || {};
+		const { regions, style, popularCities, id } = data || {};
 		const wheels = [
 			{ data: regions } // 原始数据
 		];
 		const operatedData = {
 			triggerDisplayData: false,
 			...data,
-			position: getPositionByDefaultValue(defaultValue, wheels),
 			wheels,
 			id: id || `AddressPicker${stamp}-${window.Math.floor(
 				window.Math.random() * 100
@@ -93,24 +91,6 @@ class AddressPicker extends MobileSelect {
 			inLineOverly && overlayElement.setAttribute('style', inLineOverly);
 		}
 		
-	};
-
-	setPositionById = data => {
-		this.initPosition = getPositionByDefaultValue(data, this.wheelsData);
-	};
-
-	upDatePicker = (data, callback) => {
-		const willData = this.wheelsData[0].data;
-		this.setPositionById(data);
-		this.updateWheels(willData);
-		window.setTimeout(() => callback && callback(), 100);
-	};
-
-	showPicker = data => {
-		if (Array.isArray(data) && data.length >= 2) {
-			this.upDatePicker(data);
-		}
-		this.show();
 	};
 }
 

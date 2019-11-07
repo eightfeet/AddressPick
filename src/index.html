@@ -31,7 +31,7 @@
     <div id="example">click me show AddressPicker</div>
     <div id="exampleshow">河北 (['19', '1922', '192215'])</div>
     <div id="exampleMobile">mobile-select</div>
-    <div id="exampleUpdateMobile">updateDate mobile-select</div>
+    <div id="exampleUpdateMobile">mobile-select([7, 9, 2, 20])</div>
     <br />
     <div style="text-align: center"><a href="https://github.com/eightfeet/AddressPicker/blob/master/README.md">Documents</a></div>
     <ul id="uitest">
@@ -101,38 +101,10 @@
             return provinces;
         }
 
-        function getPositionByDefaultValue(defaultData, wheels){
-            var defaultValue = defaultData || [];
-            if (!Array.isArray(defaultValue) || defaultValue.length < 1) {
-                return;
-            }
-            var data = wheels[0].data;
-            var position = [];
-            for (var indexP = 0; indexP < data.length; indexP++) {
-                var elementP = data[indexP];
-                var elementPChilds = elementP.childs;
-                if (defaultValue[0] === elementP.id) {
-                    position.push(indexP);
-                }
-                for (var indexCi = 0; indexCi < elementPChilds.length; indexCi++) {
-                    var elementCi = elementPChilds[indexCi];
-                    var elementCiChilds = elementCi.childs;
-                    if (defaultValue[1] === elementCi.id) {
-                        position.push(indexCi);
-                    }
-                    for (var indexC = 0; indexC < elementCiChilds.length; indexC++) {
-                        var elementC = elementCiChilds[indexC];
-                        if (defaultValue[2] === elementC.id) {
-                            position.push(indexC);
-                            break;
-                        }
-                    }
-                }
-            }
-            return position;
-        }
-
         var regions = formatWheelsData(window.BY_HEALTH_REGIONS);
+
+        const defaultData = ['15', '1513', '151315'];
+
         var popularCities = [
             {name: '北京', id: ['12', '1210']},
             {name: '上海', id: ['34', '3410']},
@@ -151,14 +123,15 @@
             // id: '555666',
             trigger: '#example', // 触发Dom
             // title: '请选择省市区', // 设置标题
-            // defaultValue: ['15', '1513', '151315'], // 默认选择的地址
+            defaultValue: ['15', '1513', '151315'], // 默认选择的地址
             triggerDisplayData: true, // 是否在"触发Dom"中显示已选数据 默认false(mobile-select中默认true)
             regions: regions, // 原始数据
+            // keyMap: {id: 'value', value: 'id', childs: 'childs'},
             popularCities: popularCities,
             // callback 确定后的回调，返回两个参数值，indexArr, data (分别代表当前选中wheels的位置和值)。
-            // onConfirm: function(indexArr, data){
-            //     console.log('callback', indexArr, data);
-            // },
+            onConfirm: function(indexArr, data){
+                console.log('callback', indexArr, data);
+            },
             // 取消后的回调
             onCancel: function(indexArr, data){
                 console.log('取消', indexArr, data);
@@ -210,7 +183,7 @@
                     for (let hi = 0; hi < 24; hi++) {
                         const hdata = {date: `${hi}时`, val: hi, childs: []};
                         for (let mi = 0; mi < 12; mi++) {
-                            hdata.childs.push({date: `${mi * 5}分`, val: mi * 5});
+                            hdata.childs.push({date: `${mi * 5}分`, val: (mi * 5)});
                         }
                         mdays.childs.push(hdata);
                     }
@@ -259,6 +232,7 @@
             ensureBtnText: 'ensure',
             triggerDisplayData: true,
             onConfirm: function(a, b){
+                console.log(a, b);
                 document.getElementById('onConfirm').innerText='onConfirm'+a[0]+b[0].date;
             },
             onCancel: function(a, b){
@@ -274,7 +248,6 @@
             onHide: function(e){
                 document.getElementById('onHide').innerText='onHide';
             },
-            position: [3,5,5,5],
             title: '选择日期',
             ensureBtnColor: '#000',
             cancelBtnColor: '#000',
@@ -286,17 +259,11 @@
         });
 
         document.getElementById('exampleshow').onclick = function(){
-            // 更新省市区位置 arguments:([省id, 市id, 区id], callback)
-            window.newPicker.upDatePicker(['19', '1922', '192215'], function(){
-                // 显示AddressPicker
-                window.newPicker.showPicker();
-            })
+            window.newPicker.showPicker(['19', '1922', '192215']);
         };
 
         document.getElementById('exampleUpdateMobile').onclick = function(){
-            console.log(333, window.newMobileSelect.initPosition);
-            // 更新滚动位置
-            window.newMobileSelect.show();
+            window.newMobileSelect.showPicker([7, 9, 2, 20]);
         };
 
     </script>
