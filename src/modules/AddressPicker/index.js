@@ -7,7 +7,9 @@ import m from './../MobileSelect/MobileSelect.scss';
 class AddressPicker extends MobileSelect {
 	constructor(data) {
 		const stamp = new Date().getTime();
-		const { regions, style, popularCities, id } = data || {};
+		const { regions,
+			// style,
+			popularCities, id } = data || {};
 		const wheels = [
 			{ data: regions } // 原始数据
 		];
@@ -21,7 +23,7 @@ class AddressPicker extends MobileSelect {
 		};
 		super(operatedData);
 		this.popularCities = popularCities;
-		this.initAddressPicker(style);
+		// this.initAddressPicker(style);
 	}
 
 	initAddressPicker = style => {

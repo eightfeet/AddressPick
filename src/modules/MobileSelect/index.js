@@ -1,37 +1,19 @@
 import s from './MobileSelect.scss';
 import { getPositionByDefaultValue } from '~/utils/regionsWheelsHelper.js';
+import { createDom } from '~/utils/htmlFactory';
+
+import template from './template';
 
 function getClass(dom, string) {
 	return dom.getElementsByClassName(string);
 }
 
-/**
- * id,
- * wheels: [{data:[]}],
- * keyMap,
- * cancelBtnText,
- * ensureBtnText,
- * trigger,
- * onConfirm,
- * onCancel,
- * transitionEnd,
- * onShow,
- * onHide,
- * position
- * title,
- * triggerDisplayData,
- * ensureBtnColor,
- * cancelBtnColor,
- * titleColor,
- * textColor,
- * titleBgColor,
- * bgColor,
- * maskOpacity
- */
 class MobileSelect {
 	constructor(config) {
-		const stamp = (new Date()).getTime();
 		const { wheels } = config;
+		const stamp = (new Date()).getTime();
+
+		this.id = config.id || `MobileSelect${stamp}-${window.Math.floor(window.Math.random()*100)}`;
 		this.mobileSelect;
 		this.wheelsData = wheels;
 		this.jsonType = false;
@@ -50,7 +32,6 @@ class MobileSelect {
 		this.curDistance = [];
 		this.clickStatus = false;
 		this.isPC = true;
-		this.id = config.id || `MobileSelect${stamp}-${window.Math.floor(window.Math.random()*100)}`;
 		this.init(config);
 	}
 
@@ -77,6 +58,7 @@ class MobileSelect {
 			);
 			return false;
 		}
+		this.mobileSelect = document.getElementById(this.id);
 		this.wheel = getClass(this.mobileSelect, s.wheel);
 		this.slider = getClass(this.mobileSelect, s.selectContainer);
 		this.wheels = this.mobileSelect.querySelector(`.${s.wheels}`);
@@ -108,7 +90,6 @@ class MobileSelect {
 			? config.triggerDisplayData
 			: true;
 		this.trigger.style.cursor = 'pointer';
-		this.setStyle(config);
 		this.setTitle(this.titleText);
 		this.checkIsPC();
 		this.checkCascade();
@@ -165,50 +146,9 @@ class MobileSelect {
 		this.fixRowStyle(); //修正列数
 	};
 
-	distroy = () => {
-
-	}
-
 	setTitle = string => {
 		this.titleText = string;
 		this.mobileSelect.querySelector(`.${s.title}`).innerHTML = this.titleText;
-	};
-	
-	setStyle = config => {
-		if (config.ensureBtnColor) {
-			this.ensureBtn.style.color = config.ensureBtnColor;
-		}
-		if (config.cancelBtnColor) {
-			this.cancelBtn.style.color = config.cancelBtnColor;
-		}
-		if (config.titleColor) {
-			this.title = this.mobileSelect.querySelector(`.${s.title}`);
-			this.title.style.color = config.titleColor;
-		}
-		if (config.textColor) {
-			this.panel = this.mobileSelect.querySelector(`.${s.panel}`);
-			this.panel.style.color = config.textColor;
-		}
-		if (config.titleBgColor) {
-			this.btnBar = this.mobileSelect.querySelector(`.${s.btnBar}`);
-			this.btnBar.style.backgroundColor = config.titleBgColor;
-		}
-		if (config.bgColor) {
-			this.panel = this.mobileSelect.querySelector(`.${s.panel}`);
-			this.shadowMask = this.mobileSelect.querySelector(`.${s.shadowMask}`);
-			this.panel.style.backgroundColor = config.bgColor;
-			this.shadowMask.style.background =
-				'linear-gradient(to bottom, ' +
-				config.bgColor +
-				', rgba(255, 255, 255, 0), ' +
-				config.bgColor +
-				')';
-		}
-		if (!isNaN(config.maskOpacity)) {
-			this.grayMask = this.mobileSelect.querySelector(`.${s.grayLayer}`);
-			this.grayMask.style.background =
-				'rgba(0, 0, 0, ' + config.maskOpacity + ')';
-		}
 	};
 
 	checkIsPC = () => {
@@ -236,14 +176,14 @@ class MobileSelect {
 	};
 
 	show = () => {
-		this.mobileSelect.classList.add(s['mobileSelect-show']);
+		this.mobileSelect.children[0].classList.add(s['mobileSelect-show']);
 		if (typeof this.onShow === 'function') {
 			this.onShow(this);
 		}
 	};
 
 	hide = () => {
-		this.mobileSelect.classList.remove(s['mobileSelect-show']);
+		this.mobileSelect.children[0].classList.remove(s['mobileSelect-show']);
 		if (typeof this.onHide === 'function') {
 			this.onHide(this);
 		}
@@ -252,51 +192,10 @@ class MobileSelect {
 	renderWheels = (wheelsData, cancelBtnText, ensureBtnText) => {
 		let cancelText = cancelBtnText ? cancelBtnText : '取消';
 		let ensureText = ensureBtnText ? ensureBtnText : '确认';
-		this.mobileSelect = document.createElement('div');
-		this.mobileSelect.setAttribute('id', this.id);
-		this.mobileSelect.className = s.mobileSelect;
-		this.mobileSelect.innerHTML = `<div class="${s.grayLayer} ${s.overlay} ${this.id}_overly"></div> 
-				<div class="${s.content} ${this.id}_content">
-					<div class="${s.btnBar} ${this.id}_btnbar"> 
-						<div class="${s.fixWidth}">
-							<div class="${s.cancel}"><span class="${s.btnCancel} ${this.id}_btncancel">${cancelText}</span></div>
-						<div class="${s.title} ${this.id}_title"></div>
-						<div class="${s.ensure}"><span class="${s.btnEnsure} ${this.id}_btnensure">${ensureText}</span></div>
-					</div>
-				</div>
-				<div class="${s.panel} ${this.id}_panel">
-					<div class="${s.fixWidth}">
-						<div class="${s.wheels} ${this.id}_wheels">
-							</div>
-							<div class="${s.selectLine} ${this.id}_selectline"></div>
-						<div class="${s.shadowMask} ${this.id}_shadowmask"></div>
-					</div>
-				</div>
-			</div>`;
-		document.body.appendChild(this.mobileSelect);
-
-		//根据数据长度来渲染
-
-		let tempHTML = '';
-		for (let i = 0; i < wheelsData.length; i++) {
-			//列
-			tempHTML += `<div class="${s.wheel} ${this.id}_wheel"><ul class="${s.selectContainer} ${this.id}_selectcontainer">`;
-			if (this.jsonType) {
-				for (let j = 0; j < wheelsData[i].data.length; j++) {
-					//行
-					tempHTML += `<li data-id="${wheelsData[i].data[j][this.keyMap.id]}">${
-						wheelsData[i].data[j][this.keyMap.value]
-					}</li>`;
-				}
-			} else {
-				for (let j = 0; j < wheelsData[i].data.length; j++) {
-					//行
-					tempHTML += `<li>${wheelsData[i].data[j]}</li>`;
-				}
-			}
-			tempHTML += '</ul></div>';
-		}
-		this.mobileSelect.querySelector(`.${s.wheels}`).innerHTML = tempHTML;
+		createDom(
+			template({wheelsData, cancelText, ensureText, keyMap: this.keyMap, id: this.id}, this.jsonType),
+			this.id
+		);
 	};
 
 	addListenerAll = () => {

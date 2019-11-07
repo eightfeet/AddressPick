@@ -2,27 +2,50 @@
 
 const isPC = !(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i));
 
+// isFinite Polyfill
+Number.isFinite = Number.isFinite || function(value) {
+	return typeof value === 'number' && isFinite(value);
+};
+
 /**
  * 设置dom的font-size，用于控制子元素的em基准单位，pc端时 font-size = 16px，
+ * 如果有emBase传入直接使用emBase为基准字体大小
  * 其他按规则计算字体值（屏幕宽度:UI宽度 = 屏幕字体大小:UI字体大小）
  * @param {HTMLElement} dom
+ * @param {String} parentId
+ * @param {Number} emBase
  * @returns
  */
-function setEmBase (dom) {
+function setEmBase (dom, parentId, emBase) {
+	const emBaseValidate = Number.isFinite(emBase);
+	if (emBaseValidate) {
+		dom.style.fontSize = `${emBase}px`;
+		return;
+	}
 	let docEl = window.document.documentElement;
+	let parEl = window.document.getElementById(parentId);
 	let clientWidth = docEl.clientWidth;
+	let parentWidth = parEl ? parEl.clientWidth : null;
+	const baseFont = parseFloat(__BASEFONT__);
+	const uiWidth = parseFloat(__UIWIDTH__);
+	if (parEl) {
+		if (parentWidth >= uiWidth) {
+			dom.style.fontSize = baseFont + 'px';
+		} else {
+			dom.style.fontSize = baseFont * (parentWidth / uiWidth) + 'px';
+		}
+		return;
+	}
 	if (!clientWidth) return;
 	if (isPC) {
 		dom.style.fontSize = '16px';
 		return;
 	}
-	const baseFont = parseFloat(__BASEFONT__);
-	const uiWidth = parseFloat(__UIWIDTH__);
 
 	if (clientWidth >= uiWidth) {
-		dom.style.fontSize = baseFont + "px";
+		dom.style.fontSize = baseFont + 'px';
 	} else {
-		dom.style.fontSize = baseFont * (clientWidth / uiWidth) + "px";
+		dom.style.fontSize = baseFont * (clientWidth / uiWidth) + 'px';
 	}
 }
 
@@ -32,9 +55,10 @@ function setEmBase (dom) {
  * @export
  * @param {HTMLElement} dom (Required) html模板
  * @param {String} target (Required) element id
+ * @param {String} parentId 父级 id
  * @returns
  */
-export function createDom(dom, target) {
+export function createDom(dom, target, parentId, emBase) {
 	return new Promise((resolve, reject) => {
 		if (!target || !dom) {
 			reject('function createDom: params "dom" or "target" not found.');
@@ -47,7 +71,15 @@ export function createDom(dom, target) {
 		}
 		const div = document.createElement('div');
 		div.setAttribute('id', target);
-		setEmBase(div);
+		setEmBase(div, parentId, emBase);
+		const parentIdDom = document.getElementById(parentId);
+		if (parentIdDom) {
+			parentIdDom.appendChild(div);
+			const targetDom = document.getElementById(target);
+			targetDom.innerHTML = dom;
+			resolve();
+			return;
+		}
 		document
 			.body
 			.appendChild(div);
