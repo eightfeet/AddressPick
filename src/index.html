@@ -16,6 +16,9 @@
         #exampleMobile {
             line-height: 40px; background-color: rgb(20, 150, 159); width:260px; margin: 30px auto 10px auto; color: #fff; border-radius: 0.2em; text-align: center; 
         }
+        #exampleUpdateMobile {
+            line-height: 40px; background-color: rgb(100, 100, 100); width:260px; margin: 30px auto 10px auto; color: #fff; border-radius: 0.2em; text-align: center; 
+        }
         #uitest {
             display: none;
         }
@@ -25,6 +28,7 @@
     <div id="example">click me show AddressPicker</div>
     <div id="exampleshow">河北 (['19', '1922', '192215'])</div>
     <div id="exampleMobile">mobile-select</div>
+    <div id="exampleUpdateMobile">updateDate mobile-select</div>
     <br />
     <div style="text-align: center"><a href="https://github.com/eightfeet/AddressPicker/blob/master/README.md">Documents</a></div>
     <ul id="uitest">
@@ -185,28 +189,39 @@
             }
         });
 
-        var msData = [{
-            data: [
-                {date:'1月', val: 1, childs: [
-                    {date: '1日', val: 1},
-                    {date: '2日', val: 2},
-                    {date: '3日', val: 3},
-                    {date: '4日', val: 4},
-                    {date: '5日', val: 5}
-                ]},
-                {date:'2月', val: 2},
-                {date:'3月', val: 3},
-                {date:'4月', val: 4},
-                {date:'5月', val: 5},
-                {date:'6月', val: 6},
-                {date:'7月', val: 7},
-                {date:'8月', val: 8},
-                {date:'9月', val: 9},
-                {date:'10月', val: 10},
-                {date:'11月', val: 11},
-                {date:'12月', val: 12}
-            ]
-        }]
+        function getDaysInOneMonth(year, month){
+            month = parseInt(month, 10);
+            let d= new Date(year, month, 0);
+            return d.getDate();
+        }
+
+        function getYearDate(year){
+            const data = [];
+            const M = {};
+            M.data = [];
+            for (let yi = 1; yi < 13; yi++) {
+                const temp = {date: `${yi}月`, val: yi, childs: []};
+                const days = getDaysInOneMonth(year, yi);
+                for (let di = 1; di <= days; di++) {
+                    const mdays =  {date: `${di}日`, val: di, childs: []};
+                    for (let hi = 0; hi < 24; hi++) {
+                        const hdata = {date: `${hi}时`, val: hi, childs: []};
+                        for (let mi = 0; mi < 12; mi++) {
+                            hdata.childs.push({date: `${mi * 5}分`, val: mi * 5});
+                        }
+                        mdays.childs.push(hdata);
+                    }
+                    temp.childs.push(mdays);
+                }
+                M.data.push(temp);
+            }
+            data.push(M);
+            return data;
+        }
+
+        var msData = getYearDate(2019);
+
+        // console.log(getYearDate(2019));
 
         /**
          * id,
@@ -256,7 +271,7 @@
             onHide: function(e){
                 document.getElementById('onHide').innerText='onHide';
             },
-            position: [3],
+            position: [3,5,5,5],
             title: '选择日期',
             ensureBtnColor: '#000',
             cancelBtnColor: '#000',
@@ -273,6 +288,12 @@
                 // 显示AddressPicker
                 window.newPicker.showPicker();
             })
+        };
+
+        document.getElementById('exampleUpdateMobile').onclick = function(){
+            console.log(333, window.newMobileSelect.initPosition);
+            // 更新滚动位置
+            window.newMobileSelect.show();
         };
 
     </script>

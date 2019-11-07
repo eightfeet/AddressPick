@@ -10,5 +10,3 @@ module.exports = {
 	AddressPicker: require('./modules/AddressPicker').default,
 	MobileSelect: require('./modules/MobileSelect').default
 };
-
-
