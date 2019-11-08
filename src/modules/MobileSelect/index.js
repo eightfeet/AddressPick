@@ -101,7 +101,20 @@ class MobileSelect {
 			this.cancelBtn = this.mobileSelect.querySelector(`.${s.cancel}`);
 			this.grayLayer = this.mobileSelect.querySelector(`.${s.grayLayer}`);
 			this.popUp = this.mobileSelect.querySelector(`.${s.content}`);
-	
+			this.panel = this.mobileSelect.querySelector(`.${s.panel}`);
+
+			this.wheelnode = this.panel.querySelector(`.${s.wheel}`);
+			this.wheelsnode = this.panel.querySelector(`.${s.wheels}`);
+
+			this.wheelnode && (this.wheelnode.style.height = `${this.liHeight * 5}px`);
+			this.wheelsnode && (this.wheelsnode.style.height = `${this.liHeight * 5}px`);
+
+			this.shadowMask =  this.mobileSelect.querySelector(`.${s.shadowMask}`);
+			this.shadowMask.style.height = `${this.panel.offsetHeight}px`;
+			this.selectLine = this.mobileSelect.querySelector(`.${s.selectLine}`);
+			this.selectLine.style.height = `${this.liHeight}px`;
+			this.selectLine.style.top = `${this.panel.offsetHeight/2 - this.liHeight/2}px`;
+			
 			this.onConfirm = config.onConfirm || function () { };
 			this.onCancel = config.onCancel || function () { };
 			this.transitionEnd = config.transitionEnd || function () { };
