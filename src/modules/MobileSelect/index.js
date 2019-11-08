@@ -1,22 +1,20 @@
 import s from './MobileSelect.scss';
 import { getPositionByDefaultValue } from '~/utils/regionsWheelsHelper.js';
 import { createDom, isPC } from '~/utils/htmlFactory';
-
 import template from './template';
 
-function getClass(dom, string) {
-	return dom.getElementsByClassName(string);
-}
 
 class MobileSelect {
 	constructor(config) {
-		const { wheels, title } = config;
+		const { wheels, title, cancelBtnText, ensureBtnText } = config;
 		const stamp = (new Date()).getTime();
 
 		this.id = config.id || `MobileSelect${stamp}-${window.Math.floor(window.Math.random()*100)}`;
 		this.titleText = title || '';
 		this.mobileSelect;
 		this.wheelsData = wheels;
+		this.cancelBtnText = cancelBtnText || '取消';
+		this.ensureBtnText = ensureBtnText || '确定';
 		this.jsonType = false;
 		this.cascadeJsonData = [];
 		this.displayJson = [];
@@ -37,112 +35,34 @@ class MobileSelect {
 	}
 
 	init = config => {
+		const { trigger } = config;
+		// 确定数据正常
 		if (config.wheels[0].data.length === 0) {
 			console.error(
 				'mobileSelect has been successfully installed, but the data is empty and cannot be initialized.'
 			);
 			return false;
 		}
+
+		// 重新定义数据关联结构
 		this.keyMap = config.keyMap
 			? config.keyMap
 			: { id: 'id', value: 'value', childs: 'childs' };
-		this.checkDataType();
-		this.renderWheels(
-			this.wheelsData,
-			config.cancelBtnText,
-			config.ensureBtnText,
-			config.titleText
-		);
-		this.trigger = document.querySelector(config.trigger);
+		
+		// 定义触发node
+		this.trigger = document.querySelector(trigger);
 		if (!this.trigger) {
 			console.error(
 				'mobileSelect has been successfully installed, but no trigger found on your page.'
 			);
 			return false;
 		}
-		this.mobileSelect = document.getElementById(this.id);
-		this.wheel = getClass(this.mobileSelect, s.wheel);
-		this.slider = getClass(this.mobileSelect, s.selectContainer);
-		this.wheels = this.mobileSelect.querySelector(`.${s.wheels}`);
-		this.liHeight = this.mobileSelect.querySelector('li').offsetHeight;
-		this.ensureBtn = this.mobileSelect.querySelector(`.${s.ensure}`);
-		this.cancelBtn = this.mobileSelect.querySelector(`.${s.cancel}`);
-		this.grayLayer = this.mobileSelect.querySelector(`.${s.grayLayer}`);
-		this.popUp = this.mobileSelect.querySelector(`.${s.content}`);
-		this.onConfirm = config.onConfirm || function () { };
-		this.onCancel = config.onCancel || function () { };
-		this.transitionEnd = config.transitionEnd || function () { };
-		this.onShow = config.onShow || function () { };
-		this.onHide = config.onHide || function () { };
-		this.initPosition = [];
 
-		if (config.defaultValue && config.defaultValue.length > 0) {
-			this.initPosition = getPositionByDefaultValue(config.defaultValue, this.wheelsData[0].data, this.keyMap);
-		}
+		this.checkDataType();
 
-		if (config.position && config.position.length > 0) {
-			this.initPosition = config.position;
-		}
-		
-		this.connector = config.connector || ' ';
-		this.triggerDisplayData = !(
-			typeof config.triggerDisplayData === 'undefined'
-		)
-			? config.triggerDisplayData
-			: true;
-		this.trigger.style.cursor = 'pointer';
-		this.checkCascade();
-		this.addListenerAll();
-		if (this.cascade) {
-			this.initCascade();
-		}
-		//定位 初始位置
-		if (this.initPosition.length < this.slider.length) {
-			let diff = this.slider.length - this.initPosition.length;
-			for (let i = 0; i < diff; i++) {
-				this.initPosition.push(0);
-			}
-		}
-
-		this.setCurDistance(this.initPosition);
-
-		//按钮监听
-		this.cancelBtn.addEventListener('click', () => {
-			this.hide();
-			this.onCancel(this.curIndexArr, this.curValue);
-		});
-
-		this.ensureBtn.addEventListener('click', () => {
-			this.hide();
-			if (!this.liHeight) {
-				this.liHeight = this.mobileSelect.querySelector('li').offsetHeight;
-			}
-			let tempValue = '';
-			for (let i = 0; i < this.wheel.length; i++) {
-				i === this.wheel.length - 1
-					? (tempValue += this.getInnerHtml(i))
-					: (tempValue += this.getInnerHtml(i) + this.connector);
-			}
-			if (this.triggerDisplayData) {
-				this.trigger.innerHTML = tempValue;
-			}
-			this.curIndexArr = this.getIndexArr();
-			this.curValue = this.getCurValue();
-			this.onConfirm(this.curIndexArr, this.curValue);
-		});
-
-		this.trigger.addEventListener('click', () => {
-			this.show();
-		});
-		this.grayLayer.addEventListener('click', () => {
-			this.hide();
-			this.onCancel(this.curIndexArr, this.curValue);
-		});
-		this.popUp.addEventListener('click', () => {
-			event.stopPropagation();
-		});
-
-		this.fixRowStyle(); //修正列数
+		// 创建轮子
+		this.creatWheels(config);
+			
 	};
 
 	show = () => {
@@ -159,20 +79,90 @@ class MobileSelect {
 		}
 	};
 
-	renderWheels = (wheelsData, cancelBtnText, ensureBtnText) => {
-		let cancelText = cancelBtnText ? cancelBtnText : '取消';
-		let ensureText = ensureBtnText ? ensureBtnText : '确认';
-		createDom(
+	creatWheels = (config) => {
+		return createDom(
 			template({
-				wheelsData,
-				cancelText,
-				ensureText,
+				wheelsData: this.wheelsData,
+				cancelText: this.cancelBtnText,
+				ensureText: this.ensureBtnText,
 				titleText: this.titleText,
 				keyMap: this.keyMap,
-				id: this.id
+				id: this.id,
+				style: config.style || {}
 			}, this.jsonType),
 			this.id
-		);
+		).then(() => {
+			this.mobileSelect = document.getElementById(this.id);
+			this.wheel = this.mobileSelect.getElementsByClassName(s.wheel);
+			this.slider = this.mobileSelect.getElementsByClassName(s.selectContainer);
+			this.wheels = this.mobileSelect.querySelector(`.${s.wheels}`);
+			this.liHeight = this.mobileSelect.querySelector('li').offsetHeight;
+			this.ensureBtn = this.mobileSelect.querySelector(`.${s.ensure}`);
+			this.cancelBtn = this.mobileSelect.querySelector(`.${s.cancel}`);
+			this.grayLayer = this.mobileSelect.querySelector(`.${s.grayLayer}`);
+			this.popUp = this.mobileSelect.querySelector(`.${s.content}`);
+	
+			this.onConfirm = config.onConfirm || function () { };
+			this.onCancel = config.onCancel || function () { };
+			this.transitionEnd = config.transitionEnd || function () { };
+			this.onShow = config.onShow || function () { };
+			this.onHide = config.onHide || function () { };
+			this.initPosition = [];
+
+			if (config.defaultValue && config.defaultValue.length > 0) {
+				this.initPosition = getPositionByDefaultValue(config.defaultValue, this.wheelsData[0].data, this.keyMap);
+			}
+
+			if (config.position && config.position.length > 0) {
+				this.initPosition = config.position;
+			}
+
+			this.trigger.style.cursor = 'pointer';
+			this.checkCascade();
+			this.addListenerAll();
+			if (this.cascade) {
+				this.initCascade();
+			}
+			//定位 初始位置
+			if (this.initPosition.length < this.slider.length) {
+				let diff = this.slider.length - this.initPosition.length;
+				for (let i = 0; i < diff; i++) {
+					this.initPosition.push(0);
+				}
+			}
+
+			this.setCurDistance(this.initPosition);
+
+			//按钮监听
+			this.cancelBtn.addEventListener('click', () => {
+				this.hide();
+				this.onCancel(this.curIndexArr, this.curValue);
+			});
+
+			this.ensureBtn.addEventListener('click', () => {
+				this.hide();
+				if (!this.liHeight) {
+					this.liHeight = this.mobileSelect.querySelector('li').offsetHeight;
+				}
+
+				this.curIndexArr = this.getIndexArr();
+				this.curValue = this.getCurValue();
+				this.onConfirm(this.curIndexArr, this.curValue);
+			});
+
+			this.trigger.addEventListener('click', () => {
+				this.show();
+			});
+			this.grayLayer.addEventListener('click', () => {
+				this.hide();
+				this.onCancel(this.curIndexArr, this.curValue);
+			});
+			this.popUp.addEventListener('click', () => {
+				event.stopPropagation();
+			});
+
+			this.fixRowStyle(); //修正列数
+		});
 	};
 
 	addListenerAll = () => {
@@ -548,7 +538,7 @@ class MobileSelect {
 					//offsetSum为0,相当于点击事件
 					// 0 1 [2] 3 4
 					let clickOffetNum = parseInt(
-						(document.documentElement.clientHeight - this.moveEndY) / 40,
+						(document.documentElement.clientHeight - this.moveEndY) / this.liHeight,
 						10
 					);
 					if (clickOffetNum !== 2) {
@@ -623,7 +613,7 @@ class MobileSelect {
 
 				if (this.offsetSum === 0) {
 					let clickOffetNum = parseInt(
-						(document.documentElement.clientHeight - this.moveEndY) / 40,
+						(document.documentElement.clientHeight - this.moveEndY) / this.liHeight,
 						10
 					);
 					if (clickOffetNum !== 2) {
