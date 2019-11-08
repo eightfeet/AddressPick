@@ -21,6 +21,7 @@ class MobileSelect {
 		this.displayJson = [];
 		this.curValue = [];
 		this.curIndexArr = [];
+		this.historyIndexArr = [];
 		this.cascade = false;
 		this.startY;
 		this.moveEndY;
@@ -61,13 +62,45 @@ class MobileSelect {
 
 		this.checkDataType();
 
+		this.initPosition = [];
+
+		if (config.defaultValue && config.defaultValue.length > 0) {
+			this.initPosition = getPositionByDefaultValue(config.defaultValue, this.wheelsData[0].data, this.keyMap);
+		}
+
+		if (config.position && config.position.length > 0) {
+			this.initPosition = config.position;
+		}
+
+		this.historyIndexArr = this.initPosition;
+
 		// 创建轮子
 		this.creatWheels(config);
 			
 	};
 
+	initActivated = () => {
+		const positions = this.getIndexArr();
+		if (positions && positions.length === 0) {
+			return;
+		}
+		const wheels = this.mobileSelect.getElementsByClassName(s.selectContainer);
+		for (let index = 0; index < positions.length; index++) {
+			const value = positions[index];
+			const handleNodes = wheels[index].children;
+			for (let n = 0; n < handleNodes.length; n++) {
+				const element = handleNodes[n];
+				element.removeAttribute('class');
+				if (n === value) {
+					element.setAttribute('class', `${this.id}_activated`);
+					
+				}
+			}
+		}
+	}
+
 	show = () => {
-		this.setActivated();
+		this.initActivated();
 		this.mobileSelect.children[0].classList.add(s['mobileSelect-show']);
 
 		if (typeof this.onShow === 'function') {
@@ -123,19 +156,11 @@ class MobileSelect {
 			this.onceTransitionEnd = config.onceTransitionEnd || function () { };
 			this.onShow = config.onShow || function () { };
 			this.onHide = config.onHide || function () { };
-			this.initPosition = [];
-
-			if (config.defaultValue && config.defaultValue.length > 0) {
-				this.initPosition = getPositionByDefaultValue(config.defaultValue, this.wheelsData[0].data, this.keyMap);
-			}
-
-			if (config.position && config.position.length > 0) {
-				this.initPosition = config.position;
-			}
 
 			this.trigger.style.cursor = 'pointer';
 			this.checkCascade();
 			this.addListenerAll();
+			// 联动初始化
 			if (this.cascade) {
 				this.initCascade();
 			}
@@ -180,35 +205,6 @@ class MobileSelect {
 			this.fixRowStyle(); //修正列数
 		});
 	};
-
-	setActivated = (historyPos) => {
-
-		const positions = this.getIndexArr();
-		if (positions && positions.length === 0) {
-			return;
-		}
-
-
-		const wheels = this.mobileSelect.getElementsByClassName(s.selectContainer);
-
-		for (let index = 0; index < positions.length; index++) {
-			const value = positions[index];
-			const historyvalue = historyPos ? (historyPos[index] || );
-			const handleNodes = wheels[index].children;
-			if (value === historyvalue) {
-				continue;
-			} else {
-				for (let n = 0; n < handleNodes.length; n++) {
-					const element = handleNodes[n];
-					element.removeAttribute('class');
-					if (n === value) {
-						element.setAttribute('class', `${this.id}_activated`);
-						
-					}
-				}
-			}
-		}
-	}
 
 	addListenerAll = () => {
 		for (let i = 0; i < this.slider.length; i++) {
@@ -387,6 +383,25 @@ class MobileSelect {
 	};
 
 	reRenderWheels = () => {
+		// 定位当前被选中的节点索引
+		const position = this.getIndexArr();
+		const tempPosition = [];
+		let cutLength = 0;
+
+		for (let index = 0; index < position.length; index++) {
+			const val = position[index];
+			const oldVal = this.historyIndexArr[index];
+			tempPosition.push(val);
+			if (val !== oldVal) {
+				cutLength = position.length - index - 1;
+				break;
+			}
+		}
+
+		for (let index = 0; index < cutLength; index++) {
+			tempPosition.push(0);
+		}
+
 		//删除多余的wheel
 		if (this.wheel.length > this.displayJson.length) {
 			let count = this.wheel.length - this.displayJson.length;
@@ -401,7 +416,7 @@ class MobileSelect {
 				//console.log('插入Li');
 				for (let j = 0; j < this.displayJson[i].length; j++) {
 					//行
-					tempHTML += `<li data-id="${
+					tempHTML += `<li  ${tempPosition.length > 0 && tempPosition[i] === j ? `class="${this.id}_activated"` : ''} data-id="${
 						this.displayJson[i][j][this.keyMap.id]
 					}">${this.displayJson[i][j][this.keyMap.value]}</li>`;
 				}
@@ -412,7 +427,7 @@ class MobileSelect {
 				tempHTML = `<ul class="${s.selectContainer}">`;
 				for (let j = 0; j < this.displayJson[i].length; j++) {
 					//行
-					tempHTML += `<li data-id="${
+					tempHTML += `<li ${tempPosition.length > 0 && tempPosition[i] === j ? `class="${this.id}_activated"` : ''} data-id="${
 						this.displayJson[i][j][this.keyMap.id]
 					}">${this.displayJson[i][j][this.keyMap.value]}</li>`;
 				}
@@ -442,6 +457,7 @@ class MobileSelect {
 	};
 
 	updateWheel = (sliderIndex, data) => {
+		const position = this.getIndexArr();
 		let tempHTML = '';
 		if (this.cascade) {
 			console.error(
@@ -451,7 +467,7 @@ class MobileSelect {
 		} else if (this.jsonType) {
 			for (let j = 0; j < data.length; j++) {
 				tempHTML +=
-					`<li data-id="${data[j][this.keyMap.id]}">
+					`<li ${position[sliderIndex] === j ? `class="${this.id}_activated"` : ''}  data-id="${data[j][this.keyMap.id]}">
 					${data[j][this.keyMap.value]}
 					</li>`;
 			}
@@ -564,17 +580,14 @@ class MobileSelect {
 	};
 
 	transitionEnd = (CurValue) => {
-		const historyPos = this.getIndexArr();
 		this.onceTransitionEnd(CurValue);
-		window.setTimeout(() => {
-			this.setActivated(historyPos);
-		}, 200);
 	};
 
 	touch = (event, theSlider, index) => {
 		event = event || window.event;
 		switch (event.type) {
 			case 'touchstart':
+				this.historyIndexArr = this.getIndexArr();
 				this.startY = event.touches[0].clientY;
 				this.startY = parseInt(this.startY, 10);
 				this.oldMoveY = this.startY;
@@ -652,6 +665,7 @@ class MobileSelect {
 		event = event || window.event;
 		switch (event.type) {
 			case 'mousedown':
+				this.historyIndexArr = this.getIndexArr();
 				this.startY = event.clientY;
 				this.oldMoveY = this.startY;
 				this.clickStatus = true;
