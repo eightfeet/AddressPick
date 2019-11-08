@@ -1,6 +1,7 @@
 import s from './MobileSelect.scss';
 import { getPositionByDefaultValue } from '~/utils/regionsWheelsHelper.js';
 import { createDom, isPC } from '~/utils/htmlFactory';
+import { inlineStyle } from '~/utils/tools';
 import template from './template';
 
 
@@ -66,7 +67,9 @@ class MobileSelect {
 	};
 
 	show = () => {
+		this.setActivated();
 		this.mobileSelect.children[0].classList.add(s['mobileSelect-show']);
+
 		if (typeof this.onShow === 'function') {
 			this.onShow(this);
 		}
@@ -117,7 +120,7 @@ class MobileSelect {
 			
 			this.onConfirm = config.onConfirm || function () { };
 			this.onCancel = config.onCancel || function () { };
-			this.transitionEnd = config.transitionEnd || function () { };
+			this.onceTransitionEnd = config.onceTransitionEnd || function () { };
 			this.onShow = config.onShow || function () { };
 			this.onHide = config.onHide || function () { };
 			this.initPosition = [];
@@ -177,6 +180,35 @@ class MobileSelect {
 			this.fixRowStyle(); //修正列数
 		});
 	};
+
+	setActivated = (historyPos) => {
+
+		const positions = this.getIndexArr();
+		if (positions && positions.length === 0) {
+			return;
+		}
+
+
+		const wheels = this.mobileSelect.getElementsByClassName(s.selectContainer);
+
+		for (let index = 0; index < positions.length; index++) {
+			const value = positions[index];
+			const historyvalue = historyPos ? (historyPos[index] || );
+			const handleNodes = wheels[index].children;
+			if (value === historyvalue) {
+				continue;
+			} else {
+				for (let n = 0; n < handleNodes.length; n++) {
+					const element = handleNodes[n];
+					element.removeAttribute('class');
+					if (n === value) {
+						element.setAttribute('class', `${this.id}_activated`);
+						
+					}
+				}
+			}
+		}
+	}
 
 	addListenerAll = () => {
 		for (let i = 0; i < this.slider.length; i++) {
@@ -377,10 +409,10 @@ class MobileSelect {
 			} else {
 				let tempWheel = document.createElement('div');
 				tempWheel.className = s.wheel;
-				tempHTML = `<ul class="${s.selectContainer} ${this.id}_selectcontainer">`;
+				tempHTML = `<ul class="${s.selectContainer}">`;
 				for (let j = 0; j < this.displayJson[i].length; j++) {
 					//行
-					tempHTML += `<li class="${this.id}_selectcontainer_${i}_${j}" data-id="${
+					tempHTML += `<li data-id="${
 						this.displayJson[i][j][this.keyMap.id]
 					}">${this.displayJson[i][j][this.keyMap.value]}</li>`;
 				}
@@ -419,8 +451,7 @@ class MobileSelect {
 		} else if (this.jsonType) {
 			for (let j = 0; j < data.length; j++) {
 				tempHTML +=
-					`<li data-id="
-					${data[j][this.keyMap.id]}">
+					`<li data-id="${data[j][this.keyMap.id]}">
 					${data[j][this.keyMap.value]}
 					</li>`;
 			}
@@ -494,8 +525,8 @@ class MobileSelect {
 	};
 
 	movePosition = (theSlider, distance) => {
-		theSlider.style.webkitTransform = 'translate3d(0,' + distance + 'px, 0)';
-		theSlider.style.transform = 'translate3d(0,' + distance + 'px, 0)';
+		
+		theSlider.style = inlineStyle({transform: `translate3d(0, ${distance}px, 0)`});
 	};
 
 	locatePosition = (index, posIndex) => {
@@ -532,6 +563,14 @@ class MobileSelect {
 		return this.slider[sliderIndex].getElementsByTagName('li')[index].innerHTML;
 	};
 
+	transitionEnd = (CurValue) => {
+		const historyPos = this.getIndexArr();
+		this.onceTransitionEnd(CurValue);
+		window.setTimeout(() => {
+			this.setActivated(historyPos);
+		}, 200);
+	};
+
 	touch = (event, theSlider, index) => {
 		event = event || window.event;
 		switch (event.type) {
@@ -563,7 +602,7 @@ class MobileSelect {
 						) {
 							this.curDistance[index] = newDistance;
 							this.movePosition(theSlider, this.curDistance[index]);
-							this.transitionEnd(this.getIndexArr(), this.getCurValue());
+							this.transitionEnd(this.getCurValue());
 						}
 					}
 				} else {
@@ -587,7 +626,7 @@ class MobileSelect {
 							this.movePosition(theSlider, this.curDistance[index]);
 						}, 100);
 					}
-					this.transitionEnd(this.getIndexArr(), this.getCurValue());
+					this.transitionEnd(this.getCurValue());
 				}
 
 				if (this.cascade) {
@@ -638,7 +677,7 @@ class MobileSelect {
 						) {
 							this.curDistance[index] = newDistance;
 							this.movePosition(theSlider, this.curDistance[index]);
-							this.transitionEnd(this.getIndexArr(), this.getCurValue());
+							this.transitionEnd(this.getCurValue());
 						}
 					}
 				} else {
@@ -662,7 +701,7 @@ class MobileSelect {
 							this.movePosition(theSlider, this.curDistance[index]);
 						}, 100);
 					}
-					this.transitionEnd(this.getIndexArr(), this.getCurValue());
+					this.transitionEnd(this.getCurValue());
 				}
 
 				this.clickStatus = false;
