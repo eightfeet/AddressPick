@@ -49,7 +49,7 @@ class MobileSelect {
 		// 重新定义数据关联结构
 		this.keyMap = config.keyMap
 			? config.keyMap
-			: { id: 'id', value: 'value', childs: 'childs' };
+			: { name: 'name', value: 'value', childs: 'childs' };
 		
 		// 定义触发node
 		this.trigger = document.querySelector(trigger);
@@ -305,11 +305,11 @@ class MobileSelect {
 
 	generateArrData = targetArr => {
 		let tempArr = [];
-		let keyMap_id = this.keyMap.id;
+		let keyMap_id = this.keyMap.name;
 		let keyMap_value = this.keyMap.value;
 		for (let i = 0; i < targetArr.length; i++) {
 			let tempObj = {};
-			tempObj[keyMap_id] = targetArr[i][this.keyMap.id];
+			tempObj[keyMap_id] = targetArr[i][this.keyMap.name];
 			tempObj[keyMap_value] = targetArr[i][this.keyMap.value];
 			tempArr.push(tempObj);
 		}
@@ -433,7 +433,7 @@ class MobileSelect {
 				for (let j = 0; j < this.displayJson[i].length; j++) {
 					//行
 					tempHTML += `<li  ${tempPosition.length > 0 && tempPosition[i] === j ? `class="${this.id}_activated"` : ''} data-id="${
-						this.displayJson[i][j][this.keyMap.id]
+						this.displayJson[i][j][this.keyMap.name]
 					}">${this.displayJson[i][j][this.keyMap.value]}</li>`;
 				}
 				this.slider[i].innerHTML = tempHTML;
@@ -444,7 +444,7 @@ class MobileSelect {
 				for (let j = 0; j < this.displayJson[i].length; j++) {
 					//行
 					tempHTML += `<li ${tempPosition.length > 0 && tempPosition[i] === j ? `class="${this.id}_activated"` : ''} data-id="${
-						this.displayJson[i][j][this.keyMap.id]
+						this.displayJson[i][j][this.keyMap.name]
 					}">${this.displayJson[i][j][this.keyMap.value]}</li>`;
 				}
 				tempHTML += '</ul>';
@@ -487,7 +487,7 @@ class MobileSelect {
 		} else if (this.jsonType) {
 			for (let j = 0; j < data.length; j++) {
 				tempHTML +=
-					`<li data-id="${data[j][this.keyMap.id]}">
+					`<li data-id="${data[j][this.keyMap.name]}">
 					${data[j][this.keyMap.value]}
 					</li>`;
 			}

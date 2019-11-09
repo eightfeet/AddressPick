@@ -132,7 +132,7 @@
             defaultValue: ['15', '1513', '151315'], // 默认选择的地址
             triggerDisplayData: true, // 是否在"触发Dom"中显示已选数据 默认false(mobile-select中默认true)
             regions: regions, // 原始数据
-            // keyMap: {id: 'value', value: 'id', childs: 'childs'},
+            keyMap: {name: 'id', value: 'value', childs: 'childs'},
             popularCities: popularCities,
             // callback 确定后的回调，返回两个参数值，indexArr, data (分别代表当前选中wheels的位置和值)。
             onConfirm: function(indexArr, data){
@@ -281,7 +281,7 @@
             //     }
             // ],
             trigger: '#exampleMobile',
-            keyMap: {id: 'val', value: 'date', childs: 'childs'},
+            keyMap: {name: 'val', value: 'date', childs: 'childs'},
             cancelBtnText: 'cancel',
             ensureBtnText: 'ensure',
             triggerDisplayData: true,

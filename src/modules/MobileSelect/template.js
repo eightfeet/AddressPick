@@ -11,7 +11,7 @@ function creatDataDom(config, jsonType) {
 		if (jsonType) {
 			for (let j = 0; j < wheelsData[i].data.length; j++) {
 				//行
-				tempHTML += `<li data-id="${wheelsData[i].data[j][config.keyMap.id]}">${
+				tempHTML += `<li data-id="${wheelsData[i].data[j][config.keyMap.name]}">${
 					wheelsData[i].data[j][config.keyMap.value]
 				}</li>`;
 			}

@@ -69,7 +69,7 @@ export function getPositionByDefaultValue(defaultval, data, keyMap, jsonType, ca
 				if (deepth >= defaultval.length) {
 					return;
 				}
-				if (defaultval[deepth] === element[keyMap.id]) {
+				if (defaultval[deepth] === element[keyMap.name]) {
 					position.push(index);
 					deepth++;
 					if (Array.isArray(element[keyMap.childs]) && element[keyMap.childs].length > 0) {
@@ -83,7 +83,7 @@ export function getPositionByDefaultValue(defaultval, data, keyMap, jsonType, ca
 		for (let index = 0; index < defaultval.length; index++) {
 			const element = defaultval[index];
 			data[index].data.forEach((item, index) => {
-				if (element === item[keyMap.id]) {
+				if (element === item[keyMap.name]) {
 					position.push(index);
 				}
 			});
