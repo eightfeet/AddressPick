@@ -118,8 +118,9 @@ class MobileSelect {
 		this.initActivated();
 		this.mobileSelect.children[0].classList.add(s['mobileSelect-show']);
 
+		
 		if (typeof this.onShow === 'function') {
-			this.onShow(this);
+			setTimeout(() => this.onShow(this), 300);
 		}
 	};
 
@@ -171,7 +172,11 @@ class MobileSelect {
 			this.onceTransitionEnd = config.onceTransitionEnd || function () { };
 			this.onShow = config.onShow || function () { };
 			this.onHide = config.onHide || function () { };
-			this.onChange = config.onChange || function () { };
+			this.onChange = function () {
+				setTimeout(() => {
+					config.onChange && config.onChange(this.getCurValue());
+				});
+			};
 
 			this.trigger.style.cursor = 'pointer';
 			
@@ -193,7 +198,7 @@ class MobileSelect {
 			//按钮监听
 			this.cancelBtn.addEventListener('click', () => {
 				this.hide();
-				this.onCancel(this.curIndexArr, this.curValue);
+				this.onCancel(this.curValue);
 			});
 
 			this.ensureBtn.addEventListener('click', () => {
@@ -204,7 +209,7 @@ class MobileSelect {
 
 				this.curIndexArr = this.getIndexArr();
 				this.curValue = this.getCurValue();
-				this.onConfirm(this.curIndexArr, this.curValue);
+				this.onConfirm(this.curValue);
 			});
 
 			this.trigger.addEventListener('click', () => {
@@ -212,7 +217,7 @@ class MobileSelect {
 			});
 			this.grayLayer.addEventListener('click', () => {
 				this.hide();
-				this.onCancel(this.curIndexArr, this.curValue);
+				this.onCancel(this.curValue);
 			});
 			this.popUp.addEventListener('click', () => {
 				event.stopPropagation();
@@ -455,10 +460,15 @@ class MobileSelect {
 			}
 		}
 
-		if (typeof this.onChange === 'function') {
-			this.onChange(this.getCurValue());
-		}
 		
+		const wheelsnode = this.mobileSelect.getElementsByTagName('ul');
+		const promiseArr = [];
+
+		for (let i = 0; i < wheelsnode.length; i++) {
+			promiseArr.push(onceElementTransitionEnd(wheelsnode[i]));
+		}
+
+		this.onChange();
 	};
 
 	updateWheels = data => {
@@ -673,7 +683,7 @@ class MobileSelect {
 						.then(() => {
 							this.updateActivated(element.children, index);
 							if (typeof this.onChange === 'function') {
-								this.onChange(this.getCurValue());
+								this.onChange();
 							}
 						});
 				}

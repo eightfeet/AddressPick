@@ -98,6 +98,5 @@ export function getPositionByDefaultValue(defaultval, data, keyMap, jsonType, ca
 			});
 		}
 	}
-	console.log('position', position);
 	return position;
 }

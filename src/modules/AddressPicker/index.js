@@ -2,41 +2,38 @@ import MobileSelect from './../MobileSelect';
 import { inlineStyle } from '~/utils/tools';
 import m from './../MobileSelect/MobileSelect.scss';
 
-
-
 class AddressPicker extends MobileSelect {
 	constructor(data) {
 		const stamp = new Date().getTime();
-		const { regions,
-			// style,
-			popularCities, id } = data || {};
-		const wheels = [
-			{ data: regions } // 原始数据
-		];
+		const {
+			style,
+			popularCities,
+			id
+		} = data || {};
 		const operatedData = {
 			triggerDisplayData: false,
 			...data,
-			wheels,
-			id: id || `AddressPicker${stamp}-${window.Math.floor(
-				window.Math.random() * 100
-			)}`
+			id: id || `AddressPicker${stamp}-${window.Math.floor(window.Math.random() * 100)}`
 		};
 		super(operatedData);
 		this.popularCities = popularCities;
-		// this.initAddressPicker(style);
+		this.initAddressPicker(style);
 	}
 
 	initAddressPicker = style => {
-		const confirmBtnElement = this.mobileSelect.querySelector(`.${m.btnEnsure}`);
-		const cancelBtnElement = this.mobileSelect.querySelector(`.${m.btnCancel}`);
-		const overlayElement = this.mobileSelect.querySelector(`.${m.overlay}`);
-		const contentElement = this.mobileSelect.querySelector(`.${m.content}`);
-		const btnBarElement = this.mobileSelect.querySelector(`.${m.btnBar}`);
-		const { confirmBtn, cancelBtn, overlay, popularCities, popularCitiesTitle, popularCitiesItem } = style || {};
+		const addressPicker = document.getElementById(this.id);
+		const contentElement = addressPicker.querySelector(`.${this.id}_wrap`);
+		const btnBarElement = addressPicker.querySelector(`.${this.id}_headlines`);
+
+		const {
+			popularCities,
+			popularCitiesTitle,
+			popularCitiesItem
+		} = style || {};
 
 		if (this.popularCities && Array.isArray(this.popularCities)) {
 			let popularCityDom = document.createElement('div');
-			popularCityDom.innerHTML = `<h3 class="${m.hottitle}">热门城市</h3>`;
+			popularCityDom.innerHTML = `<h3 class="${m.hottitle} ${this.id}_popular">热门城市</h3>`;
 			popularCityDom.classList.add(m.popularcities);
 			popularCityDom.classList.add(m.clearfix);
 
@@ -50,24 +47,29 @@ class AddressPicker extends MobileSelect {
 					if (positionData) {
 						positionData = positionData.split(',');
 					}
-					this.upDatePicker(positionData);
+					this.updatePicker(positionData);
+					this.initActivated();
 				});
 				popularCityDom.appendChild(div);
 			});
 			contentElement.insertBefore(popularCityDom, btnBarElement);
 
-			const popularCitiesElement = this.mobileSelect.querySelector(`.${m.popularcities}`);
-			const hottitleElement = this.mobileSelect.querySelector(`.${m.hottitle}`);
+			const popularCitiesElement = addressPicker.querySelector(
+				`.${m.popularcities}`
+			);
+			const hottitleElement = addressPicker.querySelector(`.${m.hottitle}`);
 			const hotitemElement = popularCitiesElement.getElementsByTagName('div');
 
 			if (popularCities) {
 				const inLinePopularCities = inlineStyle(popularCities);
-				inLinePopularCities && popularCitiesElement.setAttribute('style', inLinePopularCities);
+				inLinePopularCities &&
+			popularCitiesElement.setAttribute('style', inLinePopularCities);
 			}
 
 			if (popularCitiesTitle) {
 				const inLinePopularCitiesTitle = inlineStyle(popularCitiesTitle);
-				inLinePopularCitiesTitle && hottitleElement.setAttribute('style', inLinePopularCitiesTitle);
+				inLinePopularCitiesTitle &&
+			hottitleElement.setAttribute('style', inLinePopularCitiesTitle);
 			}
 
 			if (popularCitiesItem && inlineStyle(popularCitiesItem)) {
@@ -77,22 +79,6 @@ class AddressPicker extends MobileSelect {
 				}
 			}
 		}
-
-		if (confirmBtn) {
-			const inLineConfirmBtn = inlineStyle(confirmBtn);
-			inLineConfirmBtn &&
-				confirmBtnElement.setAttribute('style', inLineConfirmBtn);
-		}
-		if (cancelBtn) {
-			const inLineCancelBtn = inlineStyle(cancelBtn);
-			inLineCancelBtn &&
-				cancelBtnElement.setAttribute('style', inLineCancelBtn);
-		}
-		if (overlay) {
-			const inLineOverly = inlineStyle(overlay);
-			inLineOverly && overlayElement.setAttribute('style', inLineOverly);
-		}
-		
 	};
 }
 

@@ -44,8 +44,8 @@ export default function (config, jsonType) {
 	return `<div class="${s.mobileSelect}">
             <div class="${s.grayLayer} ${s.overlay}" ${overlayStyle ? `style="${overlayStyle}"` : ''}>
             </div> 
-            <div class="${s.content}" ${wrapStyle ? `style="${wrapStyle}"` : ''}>
-                <div class="${s.btnBar}" ${headlinesStyle ? `style="${headlinesStyle}"` : ''}> 
+            <div class="${s.content} ${id}_wrap" ${wrapStyle ? `style="${wrapStyle}"` : ''}>
+                <div class="${s.btnBar} ${id}_headlines" ${headlinesStyle ? `style="${headlinesStyle}"` : ''}> 
                     <div class="${s.fixWidth} ${id}_content">
                         <div class="${s.cancel}" ${cancelStyle ? `style="${cancelStyle}"` : ''}>
                             ${cancelText}
