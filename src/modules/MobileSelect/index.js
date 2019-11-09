@@ -61,11 +61,12 @@ class MobileSelect {
 		}
 
 		this.checkDataType();
+		this.checkCascade();
 
 		this.initPosition = [];
 
 		if (config.defaultValue && config.defaultValue.length > 0) {
-			this.initPosition = getPositionByDefaultValue(config.defaultValue, this.wheelsData[0].data, this.keyMap);
+			this.initPosition = getPositionByDefaultValue(config.defaultValue, this.wheelsData, this.keyMap, this.jsonType, this.cascade);
 		}
 
 		if (config.position && config.position.length > 0) {
@@ -73,6 +74,7 @@ class MobileSelect {
 		}
 
 		this.historyIndexArr = this.initPosition;
+
 
 		// 创建轮子
 		this.creatWheels(config);
@@ -172,7 +174,7 @@ class MobileSelect {
 			this.onChange = config.onChange || function () { };
 
 			this.trigger.style.cursor = 'pointer';
-			this.checkCascade();
+			
 			this.addListenerAll();
 			// 联动初始化
 			if (this.cascade) {
@@ -476,7 +478,7 @@ class MobileSelect {
 	};
 
 	updateWheel = (sliderIndex, data) => {
-		const position = this.getIndexArr();
+		const position = this.initPosition;
 		let tempHTML = '';
 		if (this.cascade) {
 			console.error(
@@ -495,9 +497,12 @@ class MobileSelect {
 			for (let j = 0; j < data.length; j++) {
 				tempHTML += `<li>${data[j]}</li>`;
 			}
-			this.wheelsData[sliderIndex] = data;
+			// console.log();
+			this.wheelsData[sliderIndex].data = data;
 		}
 		this.slider[sliderIndex].innerHTML = tempHTML;
+		this.setCurDistance(this.initPosition);
+		this.fixRowStyle();
 	};
 
 	fixRowStyle = () => {
@@ -776,14 +781,22 @@ class MobileSelect {
 	};
 	
 	updatePicker = (data, callback) => {
-		const willData = this.wheelsData[0].data;
-		this.initPosition = getPositionByDefaultValue(data, this.wheelsData[0].data, this.keyMap);
-		this.updateWheels(willData);
+		this.initPosition = getPositionByDefaultValue(data, this.wheelsData, this.keyMap, this.jsonType, this.cascade);
+		if (this.cascade) {
+			this.updateWheels(this.wheelsData[0].data);
+		} else if (this.jsonType) {
+			console.log('第二种情况');
+		} else {
+			for (let index = 0; index < this.wheelsData.length; index++) {
+				const wheelData = this.wheelsData[index].data;
+				this.updateWheel(index, wheelData);
+			}
+		}
 		window.setTimeout(() => callback && callback(), 100);
 	};
 
 	showPicker = data => {
-		if (Array.isArray(data) && data.length >= 2) {
+		if (Array.isArray(data)) {
 			this.updatePicker(data);
 		}
 		this.show();

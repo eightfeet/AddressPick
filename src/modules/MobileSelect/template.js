@@ -4,7 +4,6 @@ import { inlineStyle } from '~/utils/tools';
 
 function creatDataDom(config, jsonType) {
 	const { wheelsData } = config;
-
 	let tempHTML = '';
 	for (let i = 0; i < wheelsData.length; i++) {
 		//列

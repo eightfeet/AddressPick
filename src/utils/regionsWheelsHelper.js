@@ -58,25 +58,39 @@ export function formatWheelsData(data){
 	return provinces;
 }
 
-export function getPositionByDefaultValue(defaultval, data, keyMap) {
+export function getPositionByDefaultValue(defaultval, data, keyMap, jsonType, cascade) {
 	const position =[];
-	let deepth = 0;
 
-	const loop = (array) => {
-		array.forEach((element, index) => {
-			if (deepth >= defaultval.length) {
-				return;
-			}
-			if (defaultval[deepth] === element[keyMap.id]) {
-				position.push(index);
-				deepth++;
-				if (Array.isArray(element[keyMap.childs]) && element[keyMap.childs].length > 0) {
-					loop(element[keyMap.childs]);
+	if (cascade) {
+		const cascadeData = data[0].data;
+		let deepth = 0;
+		const loop = (array) => {
+			array.forEach((element, index) => {
+				if (deepth >= defaultval.length) {
+					return;
 				}
-			}
-		});
-	};
-
-	loop(data);
+				if (defaultval[deepth] === element[keyMap.id]) {
+					position.push(index);
+					deepth++;
+					if (Array.isArray(element[keyMap.childs]) && element[keyMap.childs].length > 0) {
+						loop(element[keyMap.childs]);
+					}
+				}
+			});
+		};
+		loop(cascadeData);
+	} else if (jsonType) {
+		// console.log(2, jsonType, cascade, defaultval, data, keyMap);
+	} else {
+		for (let index = 0; index < defaultval.length; index++) {
+			const element = defaultval[index];
+			data[index].data.forEach((item, index) => {
+				if (element === item) {
+					position.push(index);
+				}
+			});
+		}
+	}
+	
 	return position;
 }
