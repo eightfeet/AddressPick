@@ -1,7 +1,7 @@
 import s from './MobileSelect.scss';
 import { getPositionByDefaultValue } from '~/utils/regionsWheelsHelper.js';
 import { createDom, isPC } from '~/utils/htmlFactory';
-import { inlineStyle } from '~/utils/tools';
+import { inlineStyle, onceElementTransitionEnd } from '~/utils/tools';
 import template from './template';
 
 
@@ -81,10 +81,12 @@ class MobileSelect {
 
 	initActivated = () => {
 		const positions = this.getIndexArr();
+		const wheels = this.mobileSelect.getElementsByClassName(s.selectContainer);
+
 		if (positions && positions.length === 0) {
 			return;
 		}
-		const wheels = this.mobileSelect.getElementsByClassName(s.selectContainer);
+
 		for (let index = 0; index < positions.length; index++) {
 			const value = positions[index];
 			const handleNodes = wheels[index].children;
@@ -93,8 +95,19 @@ class MobileSelect {
 				element.removeAttribute('class');
 				if (n === value) {
 					element.setAttribute('class', `${this.id}_activated`);
-					
 				}
+			}
+		}
+	}
+
+	updateActivated = (elements, index) => {
+		const positions = this.getIndexArr();
+		const value = positions[index];
+		for (let n = 0; n < elements.length; n++) {
+			const element = elements[n];
+			element.removeAttribute('class');
+			if (n === value) {
+				element.setAttribute('class', `${this.id}_activated`);
 			}
 		}
 	}
@@ -156,6 +169,7 @@ class MobileSelect {
 			this.onceTransitionEnd = config.onceTransitionEnd || function () { };
 			this.onShow = config.onShow || function () { };
 			this.onHide = config.onHide || function () { };
+			this.onChange = config.onChange || function () { };
 
 			this.trigger.style.cursor = 'pointer';
 			this.checkCascade();
@@ -438,6 +452,11 @@ class MobileSelect {
 				this.wheels.appendChild(tempWheel);
 			}
 		}
+
+		if (typeof this.onChange === 'function') {
+			this.onChange(this.getCurValue());
+		}
+		
 	};
 
 	updateWheels = data => {
@@ -644,6 +663,15 @@ class MobileSelect {
 
 				if (this.cascade) {
 					this.checkRange(index, this.getIndexArr());
+				} else {
+					const element = this.mobileSelect.getElementsByClassName(s.selectContainer)[index];
+					onceElementTransitionEnd(element)
+						.then(() => {
+							this.updateActivated(element.children, index);
+							if (typeof this.onChange === 'function') {
+								this.onChange(this.getCurValue());
+							}
+						});
 				}
 
 				break;
@@ -721,6 +749,15 @@ class MobileSelect {
 				this.clickStatus = false;
 				if (this.cascade) {
 					this.checkRange(index, this.getIndexArr());
+				} else {
+					const element = this.mobileSelect.getElementsByClassName(s.selectContainer)[index];
+					onceElementTransitionEnd(element)
+						.then(() => {
+							this.updateActivated(element.children, index);
+							if (typeof this.onChange === 'function') {
+								this.onChange();
+							}
+						});
 				}
 				break;
 

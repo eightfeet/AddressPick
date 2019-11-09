@@ -228,10 +228,54 @@
 
         window.newMobileSelect = new ___picker___.MobileSelect({
             id:'mobileId',
-            wheels:msData,
+            // wheels:msData,
+            wheels: [
+                {
+                    data:[
+                        {id: 0, value: '周日'},
+                        {id: 1, value: '周一'},
+                        {id: 2, value: '周二'},
+                        {id: 3, value: '周三'},
+                        {id: 4, value: '周四'},
+                        {id: 5, value: '周五'},
+                        {id: 6, value: '周六'}
+                    ]
+                },
+                {
+                    data:[
+                        {id:8, value:'08:00'},
+                        {id:9, value:'09:00'},
+                        {id:10, value:'10:00'},
+                        {id:11, value:'11:00'},
+                        {id:12, value:'12:00'},
+                        {id:13, value:'13:00'},
+                        {id:14, value:'14:00'}
+                    ]
+                }
+            ],
             // wheels: [
-            //     {data:['周日','周一','周二','周三','周四','周五','周六']},
-            //     {data:['08:00','09:00','10:00','11:00','12:00','13:00','14:00']}
+            //     {
+            //         data:[
+            //             '周日',
+            //             '周一',
+            //             '周二',
+            //             '周三',
+            //             '周四',
+            //             '周五',
+            //             '周六'
+            //         ]
+            //     },
+            //     {
+            //         data:[
+            //             '08:00',
+            //             '09:00',
+            //             '10:00',
+            //             '11:00',
+            //             '12:00',
+            //             '13:00',
+            //             '14:00'
+            //         ]
+            //     }
             // ],
             trigger: '#exampleMobile',
             keyMap: {id: 'val', value: 'date', childs: 'childs'},
@@ -247,6 +291,7 @@
                 document.getElementById('onCancel').innerText='onCancel'+a[0]+b[0].date;
             },
             transitionEnd: function(a, b){
+                console.log('tend!');
                 document.getElementById('transitionEnd').innerText='transitionEnd'+a[0]+b[0].date;
             },
             onShow: function(e){
@@ -254,6 +299,9 @@
             },
             onHide: function(e){
                 document.getElementById('onHide').innerText='onHide';
+            },
+            onChange: function(data){
+                console.log(data);
             },
             title: '选择日期',
             ensureBtnColor: '#000',
@@ -278,7 +326,8 @@
         };
 
         document.getElementById('exampleUpdateMobile').onclick = function(){
-            window.newMobileSelect.showPicker([7, 9, 2, 20]);
+            window.newMobileSelect.showPicker(['周二', '10:00']);
+            // window.newMobileSelect.showPicker([7, 9, 2, 20]);
         };
 
     </script>
