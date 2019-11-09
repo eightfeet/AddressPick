@@ -80,7 +80,14 @@ export function getPositionByDefaultValue(defaultval, data, keyMap, jsonType, ca
 		};
 		loop(cascadeData);
 	} else if (jsonType) {
-		// console.log(2, jsonType, cascade, defaultval, data, keyMap);
+		for (let index = 0; index < defaultval.length; index++) {
+			const element = defaultval[index];
+			data[index].data.forEach((item, index) => {
+				if (element === item[keyMap.id]) {
+					position.push(index);
+				}
+			});
+		}
 	} else {
 		for (let index = 0; index < defaultval.length; index++) {
 			const element = defaultval[index];
@@ -91,6 +98,6 @@ export function getPositionByDefaultValue(defaultval, data, keyMap, jsonType, ca
 			});
 		}
 	}
-	
+	console.log('position', position);
 	return position;
 }

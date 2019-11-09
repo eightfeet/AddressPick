@@ -478,7 +478,6 @@ class MobileSelect {
 	};
 
 	updateWheel = (sliderIndex, data) => {
-		const position = this.initPosition;
 		let tempHTML = '';
 		if (this.cascade) {
 			console.error(
@@ -488,7 +487,7 @@ class MobileSelect {
 		} else if (this.jsonType) {
 			for (let j = 0; j < data.length; j++) {
 				tempHTML +=
-					`<li ${position[sliderIndex] === j ? `class="${this.id}_activated"` : ''}  data-id="${data[j][this.keyMap.id]}">
+					`<li data-id="${data[j][this.keyMap.id]}">
 					${data[j][this.keyMap.value]}
 					</li>`;
 			}
@@ -784,8 +783,6 @@ class MobileSelect {
 		this.initPosition = getPositionByDefaultValue(data, this.wheelsData, this.keyMap, this.jsonType, this.cascade);
 		if (this.cascade) {
 			this.updateWheels(this.wheelsData[0].data);
-		} else if (this.jsonType) {
-			console.log('第二种情况');
 		} else {
 			for (let index = 0; index < this.wheelsData.length; index++) {
 				const wheelData = this.wheelsData[index].data;
