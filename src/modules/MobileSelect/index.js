@@ -7,7 +7,7 @@ import template from './template';
 
 class MobileSelect {
 	constructor(config) {
-		const { wheels, title, cancelBtnText, ensureBtnText } = config;
+		const { wheels, title, cancelBtnText, confirmBtnText } = config;
 		const stamp = (new Date()).getTime();
 
 		this.id = config.id || `MobileSelect${stamp}-${window.Math.floor(window.Math.random()*100)}`;
@@ -15,7 +15,7 @@ class MobileSelect {
 		this.mobileSelect;
 		this.wheelsData = wheels;
 		this.cancelBtnText = cancelBtnText || '取消';
-		this.ensureBtnText = ensureBtnText || '确定';
+		this.confirmBtnText = confirmBtnText || '确定';
 		this.jsonType = false;
 		this.cascadeJsonData = [];
 		this.displayJson = [];
@@ -136,20 +136,22 @@ class MobileSelect {
 			template({
 				wheelsData: this.wheelsData,
 				cancelText: this.cancelBtnText,
-				ensureText: this.ensureBtnText,
+				confirmText: this.confirmBtnText,
 				titleText: this.titleText,
 				keyMap: this.keyMap,
 				id: this.id,
 				style: config.style || {}
 			}, this.jsonType),
-			this.id
+			this.id,
+			config.parentId,
+			config.emBase
 		).then(() => {
 			this.mobileSelect = document.getElementById(this.id);
 			this.wheel = this.mobileSelect.getElementsByClassName(s.wheel);
 			this.slider = this.mobileSelect.getElementsByClassName(s.selectContainer);
 			this.wheels = this.mobileSelect.querySelector(`.${s.wheels}`);
 			this.liHeight = this.mobileSelect.querySelector('li').offsetHeight;
-			this.ensureBtn = this.mobileSelect.querySelector(`.${s.ensure}`);
+			this.ensureBtn = this.mobileSelect.querySelector(`.${s.confirm}`);
 			this.cancelBtn = this.mobileSelect.querySelector(`.${s.cancel}`);
 			this.grayLayer = this.mobileSelect.querySelector(`.${s.grayLayer}`);
 			this.popUp = this.mobileSelect.querySelector(`.${s.content}`);

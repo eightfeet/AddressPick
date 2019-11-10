@@ -93,6 +93,7 @@
             <li id="onHide"></li>
         </ul>
     </div>
+    <div id="xxxxxxxxx"></div>
 </body>
 <script>
     //=================================================//
@@ -200,6 +201,8 @@
 
     window.newPicker = new AddressPicker({
         id: 'address',
+        parentId: 'xxxxxxxxx',
+        // emBase: 20,
         trigger: '#addresspicker', // 触发Dom
         title: '请选择省市区', // 设置标题
         defaultValue: ['15', '1513', '151315'], // 默认选择的地址
@@ -226,19 +229,6 @@
         },
         // 控制样式
         style: {
-            // 确定按钮
-            confirmBtn: {
-                backgroundColor: '#7fb581',
-                color: '#fff',
-                padding: '5px 10px',
-                borderRadius: '5px'
-            },
-            // 取消按钮
-            cancelBtn: {
-                backgroundColor: '#eee',
-                padding: '5px 10px',
-                borderRadius: '5px'
-            },
             // 半透明覆盖层
             overlay: {
             },
@@ -296,7 +286,7 @@
         trigger: '#mobileselect',
         keyMap: { name: 'val', value: 'date', childs: 'childs' },
         cancelBtnText: 'cancel',
-        ensureBtnText: 'ensure',
+        confirmBtnText: 'ensure',
         triggerDisplayData: true,
         onConfirm: function (data) {
             handleResult(data, '#mobileselect', null, 'mobileselectStringtype')
@@ -355,7 +345,7 @@
         trigger: '#mobileselectjsontype',
         keyMap: { name: 'val', value: 'date', childs: 'childs' },
         cancelBtnText: 'cancel',
-        ensureBtnText: 'ensure',
+        confirmBtnText: 'ensure',
         triggerDisplayData: true,
         onConfirm: function (data) {
             console.log(data);
@@ -403,7 +393,7 @@
         trigger: '#mobileselectcascade',
         keyMap: { name: 'val', value: 'date', childs: 'childs' },
         cancelBtnText: 'cancel',
-        ensureBtnText: 'ensure',
+        confirmBtnText: 'ensure',
         triggerDisplayData: true,
         onConfirm: function (data) {
             console.log(data);

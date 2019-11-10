@@ -4,7 +4,7 @@
 - showPicker(value);
 - getCurValue();
 
-
+overlay, wrap, headlines, title, cancel, ensure, panel, selectline, mask, wheels
 
 AddressPicker   MobileSelect
 

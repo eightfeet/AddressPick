@@ -27,15 +27,15 @@ function creatDataDom(config, jsonType) {
 }
 
 export default function (config, jsonType) {
-	const { id, cancelText, ensureText, titleText, style } = config;
-	const { overlay, wrap, headlines, title, cancel, ensure, panel, selectline, mask, wheels } = style || {};
+	const { id, cancelText, confirmText, titleText, style } = config;
+	const { overlay, wrap, headlines, title, cancel, confirm, panel, selectline, mask, wheels } = style || {};
 
 	const overlayStyle = inlineStyle(overlay);
 	const wrapStyle = inlineStyle(wrap);
 	const headlinesStyle = inlineStyle(headlines);
 	const titleStyle = inlineStyle(title);
 	const cancelStyle = inlineStyle(cancel);
-	const ensureStyle = inlineStyle(ensure);
+	const confirmStyle = inlineStyle(confirm);
 	const panelStyle = inlineStyle(panel);
 	const selectlineStyle = inlineStyle(selectline);
 	const maskStyle = inlineStyle(mask);
@@ -53,8 +53,8 @@ export default function (config, jsonType) {
 						<div class="${s.title}" ${titleStyle ? `style="${titleStyle}"` : ''}>
 							${titleText || ''}
                         </div>
-                        <div class="${s.ensure}" ${ensureStyle ? `style="${ensureStyle}"` : ''}>
-                            ${ensureText}
+                        <div class="${s.confirm}" ${confirmStyle ? `style="${confirmStyle}"` : ''}>
+                            ${confirmText}
                         </div>
                     </div>
                 </div>
