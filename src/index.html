@@ -35,7 +35,7 @@
             text-align: center;
         }
 
-        #exampleshow {
+        #mobileselect {
             line-height: 40px;
             background-color: rgb(159, 83, 165);
             width: 260px;
@@ -45,7 +45,7 @@
             text-align: center;
         }
 
-        #exampleMobile {
+        #mobileselectjsontype {
             line-height: 40px;
             background-color: rgb(20, 150, 159);
             width: 260px;
@@ -55,7 +55,7 @@
             text-align: center;
         }
 
-        #exampleUpdateMobile {
+        #mobileselectcascade {
             line-height: 40px;
             background-color: rgb(100, 100, 100);
             width: 260px;
@@ -69,22 +69,19 @@
             display: none;
         }
 
-        .mobileId_activated {
+        .cascadeSelect_activated {
             color: red;
         }
 
-        .address_activated {
-            color: green;
-        }
     </style>
 </head>
 
 <body>
     <div id="wrap">
+        <div id="mobileselect">demo</div>
+        <div id="mobileselectjsontype">demo-jsontype</div>
+        <div id="mobileselectcascade">demo-cascade 联动</div>
         <div id="addresspicker">地址选择</div>
-        <div id="exampleshow">河北 (['19', '1922', '192215'])</div>
-        <div id="exampleMobile">mobile-select</div>
-        <div id="exampleUpdateMobile">mobile-select([7, 9, 2, 20])</div>
         <br />
         <div style="text-align: center"><a
                 href="https://github.com/eightfeet/AddressPicker/blob/master/README.md">Documents</a></div>
@@ -291,6 +288,44 @@
     var msData = getYearDate(2019);
 
     window.newMobileSelect = new MobileSelect({
+        id: 'newMobileSelect',
+        wheels: [
+            {data:['周日','周一','周二','周三','周四','周五','周六']},
+            {data:['08:00','09:00','10:00','11:00','12:00','13:00','14:00']}
+        ],
+        trigger: '#mobileselect',
+        keyMap: { name: 'val', value: 'date', childs: 'childs' },
+        cancelBtnText: 'cancel',
+        ensureBtnText: 'ensure',
+        triggerDisplayData: true,
+        onConfirm: function (data) {
+            handleResult(data, '#mobileselect', null, 'mobileselectStringtype')
+        },
+        onCancel: function (data) {
+            handleResult(data, '#mobileselect', null, 'mobileselectStringtype')
+        },
+        transitionEnd: function (data) {
+            handleResult(data, '#mobileselect', null, 'mobileselectStringtype')
+        },
+        onShow: function (e) {
+            console.log(e);
+            handleResult(e.getCurValue(), '#mobileselect', null, 'mobileselectStringtype')
+        },
+        onHide: function (e) {
+            console.log(e);
+        },
+        onChange: function (data) {
+            handleResult(data, '#mobileselect', null, 'mobileselectStringtype')
+        },
+        title: 'demo',
+        style: {
+            panel: {
+                backgroundColor: '#aaa'
+            }
+        }
+    });
+
+    window.jsonSelect = new MobileSelect({
         id: 'mobileId',
         // wheels:msData,
         wheels: [
@@ -317,54 +352,34 @@
                 ]
             }
         ],
-        // wheels: [
-        //     {
-        //         data:[
-        //             '周日',
-        //             '周一',
-        //             '周二',
-        //             '周三',
-        //             '周四',
-        //             '周五',
-        //             '周六'
-        //         ]
-        //     },
-        //     {
-        //         data:[
-        //             '08:00',
-        //             '09:00',
-        //             '10:00',
-        //             '11:00',
-        //             '12:00',
-        //             '13:00',
-        //             '14:00'
-        //         ]
-        //     }
-        // ],
-        trigger: '#exampleMobile',
+        trigger: '#mobileselectjsontype',
         keyMap: { name: 'val', value: 'date', childs: 'childs' },
         cancelBtnText: 'cancel',
         ensureBtnText: 'ensure',
         triggerDisplayData: true,
         onConfirm: function (data) {
             console.log(data);
+            handleResult(data, '#mobileselectjsontype', 'date', 'mobileSelectJsontype')
         },
         onCancel: function (data) {
             console.log(data);
+            handleResult(data, '#mobileselectjsontype', 'date', 'mobileSelectJsontype')
         },
         transitionEnd: function (data) {
             console.log(data);
+            handleResult(data, '#mobileselectjsontype', 'date', 'mobileSelectJsontype')
         },
         onShow: function (e) {
-            console.log(e);
+            handleResult(e.getCurValue(), '#mobileselectjsontype', 'date', 'mobileSelectJsontype');
         },
         onHide: function (e) {
             console.log(e);
         },
         onChange: function (data) {
             console.log(data);
+            handleResult(data, '#mobileselectjsontype', 'date', 'mobileSelectJsontype')
         },
-        title: '选择日期',
+        title: 'json类型',
         ensureBtnColor: '#000',
         cancelBtnColor: '#000',
         textColor: 'red',
@@ -382,13 +397,46 @@
         }
     });
 
-    document.getElementById('exampleshow').onclick = function () {
-        window.newPicker.showPicker(['19', '1922', '192215']);
-    };
-
-    document.getElementById('exampleUpdateMobile').onclick = function () {
-        window.newMobileSelect.showPicker([3, 11]);
-    };
+    window.cascadeSelect = new MobileSelect({
+        id: 'cascadeSelect',
+        wheels:msData,
+        trigger: '#mobileselectcascade',
+        keyMap: { name: 'val', value: 'date', childs: 'childs' },
+        cancelBtnText: 'cancel',
+        ensureBtnText: 'ensure',
+        triggerDisplayData: true,
+        onConfirm: function (data) {
+            console.log(data);
+            handleResult(data, '#mobileselectcascade', 'date', 'mobileselectCascade')
+        },
+        onCancel: function (data) {
+            console.log(data);
+            handleResult(data, '#mobileselectcascade', 'date', 'mobileselectCascade')
+        },
+        transitionEnd: function (data) {
+            console.log(data);
+            handleResult(data, '#mobileselectcascade', 'date', 'mobileselectCascade')
+        },
+        onShow: function (e) {
+            handleResult(e.getCurValue(), '#mobileselectcascade', 'date', 'mobileselectCascade');
+        },
+        onHide: function (e) {
+            console.log(e);
+        },
+        onChange: function (data) {
+            console.log(data);
+            handleResult(data, '#mobileselectcascade', 'date', 'mobileselectCascade')
+        },
+        title: '多级联动',
+        style: {
+            wrap: {
+                color: '#444'
+            },
+            mask: {
+                height: '50em'
+            }
+        }
+    });
 
 </script>
 

@@ -1,5 +1,11 @@
 # Picker
 
+- updatePicker(value);
+- showPicker(value);
+- getCurValue();
+
+
+
 AddressPicker   MobileSelect
 
 <a href="http://www.eightfeet.cn/AddressPicker/dist/index.html" traget="_blank" >demo</a>

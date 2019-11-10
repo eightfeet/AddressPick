@@ -46,9 +46,8 @@ class AddressPicker extends MobileSelect {
 					let positionData = e.target.getAttribute('data-id');
 					if (positionData) {
 						positionData = positionData.split(',');
+						this.updatePicker(positionData);
 					}
-					this.updatePicker(positionData);
-					this.initActivated();
 				});
 				popularCityDom.appendChild(div);
 			});

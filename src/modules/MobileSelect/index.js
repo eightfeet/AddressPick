@@ -799,7 +799,10 @@ class MobileSelect {
 				this.updateWheel(index, wheelData);
 			}
 		}
-		window.setTimeout(() => callback && callback(), 100);
+		window.setTimeout(() => {
+			this.initActivated();
+			callback && callback();
+		}, 100);
 	};
 
 	showPicker = data => {
