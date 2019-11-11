@@ -1,154 +1,67 @@
-# Picker
+# picker
 
-- updatePicker(value);
-- showPicker(value);
-- getCurValue();
-
-overlay, wrap, headlines, title, cancel, ensure, panel, selectline, mask, wheels
-
-AddressPicker   MobileSelect
-
-<a href="http://www.eightfeet.cn/AddressPicker/dist/index.html" traget="_blank" >demo</a>
-
-### AddressPicker
-
-地址选择器 AddressPicker extends MobileSelect
-
-#### parame
-
-| 参数               | 说明                             | 是否必填 | 备注                                                         | 类型     |
-| ------------------ | -------------------------------- | -------- | ------------------------------------------------------------ | -------- |
-| id                 | 所创建AddressPicker的id          | 否       | 不传可自动生成id（AddressPicker + 时间戳 + 100以内的随机数） | String   |
-| trigger            | 触发显示地址选择器的trigger Node | 是       | 建议使用id，如<br />{<br />      trigger: "#trigger"<br />}  | String   |
-| triggerDisplayData | 是否在trigger Node中显示所选值   | 否       | 默认false<br />(MobileSelect中默认true)                      | Boolean  |
-| title              | 设置标题，不填隐藏               | 否       | 默认不填                                                     | String   |
-| defaultValue       | 默认选择的地址                   | 否       | 数组，省市区id组成<br />['15', '1513', '151315']             | Array    |
-| onConfirm          | 确认                             | 否       | 确定后的回调，返回两个参数值，1、indexArr（选中值在wheels上的位置）, 2、data (所选省市区的value值)。 | Function |
-| onCancel           | 取消                             | 否       | 取消后的回调，返回两个参数值，1、indexArr（上次选中值在wheels上的位置）, 2、data (上次所选省市区的value值)。 | Function |
-| popularCities      | 显示热门城市                     | 否       | 默认不填隐藏<br />数据结构<br />[<br />    { name: '北京', id: ['12', '1210'] },<br />    { name: '上海', id: ['34', '3410'] },<br />...<br />] | Array    |
-| style              | 样式定义                         | 否       | 定义AddressPicker样式<br /> {<br />    overlay: 覆盖层, <br />    confirmBtn: 确定按钮, <br />    cancelBtn: 取消按钮， <br />    popularCities: 热门城市<br />    popularCitiesTitle: 热门城市标题<br />    popularCitiesItem: 热门城市项<br />} <br /> | css      |
-
-
-
-#### options
-
-1. ##### showPicker：f(data) 显示AddressPicker
-
-   data: Array 省市区id
-
-   > 如 ['10','1010','101010']
-
-2. ##### upDatePicker: f(data, callback) 显示
-
-   data: Array 省市区id
-
-   > 如 ['10','1010','101010']
-
-   callback: f() 更新选择地址后的回调
-
-
-
-### case
-
-```javascript
-
-import AddressPicker from './modules/AddressPicker';
-
-// 省市区数据源
-const regions = [
-  {
-    "id": "10",
-    "value": "安徽",
-    "childs": [
-      {
-        "id": "1010",
-        "value": "安庆",
-        "childs": [
-          {
-            "id": "101010",
-            "value": "迎江区"
-          },
-          {
-            "id": "101011",
-            "value": "大观区"
-          },
-          {
-            "id": "101012",
-			"value": ...
-		  }
-		]
-	  }
-	]
-  }
-  ...
-]
-
-// 热门城市
-const popularCities = [
-    {name: '北京', id: ['12', '1210']},
-    {name: '上海', id: ['34', '3410']},
-    {name: '广州', id: ['15', '1513']},
-    {name: '深圳', id: ['15', '1524']},
-    {name: '杭州', id: ['43', '4311']},
-    {name: '南京', id: ['26', '2613']},
-    {name: '天津', id: ['37', '3710']},
-    {name: '苏州', id: ['26', '2616']},
-    {name: '长沙', id: ['24', '2411']},
-    {name: '重庆', id: ['13', '1310']},
-    {name: '成都', id: ['32', '3212']}
-];
-
-const newPicker = new AddressPicker({
-    id: '555666',
-    trigger: '#example', // 触发Dom
-    title: '请选择省市区', // 设置标题
-    // defaultValue: ['15', '1513', '151315'], // 默认选择的地址
-    triggerDisplayData: true, // 是否在"触发Dom"中显示已选数据 默认false
-    regions: regions, // 原始数据
-    popularCities: popularCities,
-    //确定后的回调，返回两个参数值，indexArr, data (分别代表当前选中wheels的位置和值)。
-    onConfirm: function(indexArr, data){
-        console.log('callback', indexArr, data);
-    },
-    // 取消后的回调
-    onCancel: function(indexArr, data){
-        console.log('取消', indexArr, data);
-    },
-    // 控制样式
-    style: {
-        // 确定按钮
-        confirmBtn: {
-            backgroundColor: '#7fb581',
-            color: '#fff',
-            padding: '5px 10px',
-            borderRadius: '5px'
-        },
-        // 取消按钮
-        cancelBtn: {
-            backgroundColor: '#eee',
-            padding: '5px 10px',
-            borderRadius: '5px'
-        },
-        // 半透明覆盖层
-        overlay: {
-        },
-        // 热门城市
-        popularCities: {
-            backgroundColor: '#efefef',
-        },
-        popularCitiesTitle: {
-        },
-        popularCitiesItem: {
-        }
-    }
-});
-
-document.getElementById('exampleshow').onclick = function(){
-		// 更新省市区位置 arguments:([省id, 市id, 区id], callback)
-		window.newPicker.upDatePicker(['19', '1922', '192215'], () => {
-			// 显示AddressPicker
-			window.newPicker.showPicker();
-		})
-	};
+```sh
+npm install @eightfeet/picker
 ```
 
+### Usage
+
+```javascript
+import { MobileSelect } from @eightfeet/picker;
+
+const datePicker = new MobileSelect({
+        id: 'datePicker',
+        wheels: [
+            {data:['周日','周一','周二','周三','周四','周五','周六']},
+            {data:['08:00','09:00','10:00','11:00','12:00','13:00','14:00']}
+        ],
+        trigger: '#datepicker',
+        onConfirm: function (data) {
+            handleResult(data, '#mobileselect', null, 'mobileselectStringtype')
+        }
+    });
+
+datePicker.showPicker(['周二', '10：00']);
+```
+
+
+
+### parame
+
+| 参数          | 类型     | 说明                                                         | 是否必填           |
+| ------------- | -------- | ------------------------------------------------------------ | ------------------ |
+| id            | String   | 模块ID，模块根节点将以此为id，部分子节点将添加class=“id_功能名” 作为className用于覆写样式（能通过style参数设置样式的尽量不要通过className去覆写），默认id=MobileSelect_时间戳_100位随机数 | 否                 |
+| parentId      | String   | 模块挂载的父节点，                                           | 否                 |
+| emBase        | Number   | 基础字体大小，模块采用em为单位制，子节点元素单位em的参考值，比如｛emBase:20｝则相当于1em=20px | 否                 |
+| trigger       | String   | 引用picker页面的目标触发node，用于点击以唤起picker           | 必填               |
+| title         | String   | 设置picker的标题                                             | 否                 |
+| wheels        | Object   | picker的原始数据，这里控制picker选择器的类型,见附表          | 必填               |
+| keyMap        | Object   | 当wheels为对象类型时，指定数据key，用于展示、值或者子集的字段名 | JSON数据类型时必填 |
+| defaultValue  | Array    | 创建picker初始化时默认选择的值，请使用keyMap中valve对应定义的key的值 | 否                 |
+| style         | Object   | 控制picker的样式，见style附表                                |                    |
+| onConfirm     | Function | 点击确认时的回调，以参数形式返回被选中的结果                 | 否                 |
+| onCancel      | Function | 点击取消或者遮罩层时的回调，以参数形式返回上次选中的结果     | 否                 |
+| transitionEnd | Function | 滚动结束时的回调，以参数形式返回被选中的结果                 | 否                 |
+| onShow        | Function | 显示picker时的回调，返回picker对象                           | 否                 |
+| onHide        | Function | 隐藏picker时的回调，返回picker对象                           | 否                 |
+| onChange      | Function | 改变选择时的回调，以参数形式返回被选中的结果                 | 否                 |
+
+
+
+### options
+
+#### picker.updatePicker(value)
+
+用于更新picker默认值，value是要更新的值
+
+
+
+#### picker.showPicker(value);
+
+显示picker，有参数时定位到参数值位置再显示picker
+
+
+
+#### picker.getCurValue();
+
+获取当前选中结果的值

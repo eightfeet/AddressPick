@@ -1,16 +1,16 @@
-import s from './MobileSelect.scss';
+import s from './Picker.scss';
 import { getPositionByDefaultValue } from '~/utils/regionsWheelsHelper.js';
 import { createDom, isPC } from '~/utils/htmlFactory';
 import { inlineStyle, onceElementTransitionEnd } from '~/utils/tools';
 import template from './template';
 
 
-class MobileSelect {
+class Picker {
 	constructor(config) {
 		const { wheels, title, cancelBtnText, confirmBtnText } = config;
 		const stamp = (new Date()).getTime();
 
-		this.id = config.id || `MobileSelect${stamp}-${window.Math.floor(window.Math.random()*100)}`;
+		this.id = config.id || `Picker${stamp}-${window.Math.floor(window.Math.random()*100)}`;
 		this.titleText = title || '';
 		this.mobileSelect;
 		this.wheelsData = wheels;
@@ -815,4 +815,4 @@ class MobileSelect {
 	};
 }
 
-export default MobileSelect;
+export default Picker;

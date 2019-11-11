@@ -157,8 +157,7 @@
         return provinces;
     }
 
-    var MobileSelect = ___picker___.MobileSelect;
-    var AddressPicker = ___picker___.AddressPicker;
+    var MobileSelect = ___Picker___;
 
     var regions = formatWheelsData(window.BY_HEALTH_REGIONS);
 
@@ -199,7 +198,7 @@
         }
     }
 
-    window.newPicker = new AddressPicker({
+    window.newPicker = new MobileSelect({
         id: 'address',
         parentId: 'xxxxxxxxx',
         // emBase: 20,
@@ -208,7 +207,6 @@
         defaultValue: ['15', '1513', '151315'], // 默认选择的地址
         wheels: [{ data: regions }], // 原始数据
         keyMap: { name: 'id', value: 'value', childs: 'childs' },
-        popularCities: popularCities,
         onConfirm: function (data) {
             handleResult(data, '#addresspicker', 'value', '请选择地址')
         },
@@ -229,17 +227,6 @@
         },
         // 控制样式
         style: {
-            // 半透明覆盖层
-            overlay: {
-            },
-            // 热门城市
-            popularCities: {
-                backgroundColor: '#efefef',
-            },
-            popularCitiesTitle: {
-            },
-            popularCitiesItem: {
-            }
         }
     });
 
@@ -272,7 +259,6 @@
         data.push(M);
         return data;
     }
-
 
 
     var msData = getYearDate(2019);

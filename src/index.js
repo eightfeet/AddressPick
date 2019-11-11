@@ -6,7 +6,4 @@ Number.parseInt = Number.parseInt || parseInt;
 Number.isFinite = Number.isFinite || function(value) {
 	return typeof value === 'number' && isFinite(value);
 };
-module.exports = {
-	AddressPicker: require('./modules/AddressPicker').default,
-	MobileSelect: require('./modules/MobileSelect').default
-};
+module.exports = require('./modules/Picker').default;

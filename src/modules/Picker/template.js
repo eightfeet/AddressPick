@@ -1,4 +1,4 @@
-import s from './MobileSelect.scss';
+import s from './Picker.scss';
 import { inlineStyle } from '~/utils/tools';
 
 

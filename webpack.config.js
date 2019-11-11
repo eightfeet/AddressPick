@@ -10,7 +10,7 @@ module.exports = () => ({
 	entry: './src/index.js',
 	context: path.resolve(__dirname),
 	output: {
-		library: '___picker___',
+		library: '___Picker___',
 		libraryTarget: 'umd',
 		path: path.resolve(__dirname, 'dist'),
 		filename: 'picker.js',
