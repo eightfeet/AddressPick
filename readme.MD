@@ -120,37 +120,42 @@ datePicker.showPicker(['周二', '10：00']);
 
 - **联动数据结构**  
 
+  > 联动数据常用于父子关系数据的展示，他的显示信息与对应值也是分开展示的场景，数据中的每一个层级关系代表列一个wheel列，平级数组的每一个对象为当前wheel列的每一项，依次到最后一个子集。wheels子集嵌套越深，Picker的列数也就越多
+  >
+  > 这里需要注意的是同 “{ key: value } 数据” 结构一样需要通过keyMap来通知Picker当前数据哪个key是用于显示的, 比如下面数据就需要指定```keyMap = { name: 'date', value: 'val', childs: 'childs'}```
+
   ```javascript
-  [{
-      data: [
-          {
-              val: '0',
-              date: '周日',
-              children: [
-                  {
-                      val: '0-1',
-                      date: '上午',
-                      children: [
-                          {
-                              val: 0,
-                              date: 'A',
-                              children: [...]
-                          },
-                          {
-                              val: 0,
-                              date: 'B',
-                              children: [...]
-                          },
-                          ...
-                      ]
-                  },
-                  {
-                     ... 
-                  },
-              ]
-          },
-      ]
-  }]
+  [
+      {
+          data: [
+              {
+                  val: 'a',
+                  date: 'A',
+                  childs: [
+                      {
+                          val: 'a-a',
+                          date: 'A-A',
+                          childs: [
+                              {
+                                  val: 'a-a-a',
+                                  date: 'A-A-A',
+                              },
+                              {
+                                  ...第三级第二项
+                              }
+                          ]
+                      },
+                      {
+                          ...第二级第二项
+                      }
+                  ]
+              },
+              {
+  				...第一级第二项
+              }
+          ]
+      }
+  ],
   ```
 
   
@@ -159,9 +164,22 @@ datePicker.showPicker(['周二', '10：00']);
 
 ### style附表
 
-| 属性名 | 说明 | 备注 |
-| ------ | ---- | ---- |
-|        |      |      |
-|        |      |      |
-|        |      |      |
+> 用于定义Picker的样式，这里以行内样式覆写Picker的默认样式，每个属性名对应一个node节点；属性名的值应该是一个style Object，Object的key建议使用javascript 的style属性，比如 { backgroundColor: "red" , zIndex: 100 }，这样Picker内部的生成程序可以更好的补全浏览器厂商前缀，当然如果样式属性浏览器支持很好的话，你也完全可以写成 { "background-color": "red" , "z-index": 100 }
 
+| 属性名     | 说明                                                     |
+| ---------- | -------------------------------------------------------- |
+| overlay    | 覆盖层   overlay: { backgroundColor: 'rgba(0,0,0,0.4)' } |
+| wrap       | 外框                                                     |
+| headlines  | 标题栏                                                   |
+| title      | 标题                                                     |
+| cancel     | 取消                                                     |
+| confirm    | 确定                                                     |
+| panel      | 轮子面板                                                 |
+| selectline | 选择线                                                   |
+| mask       | 轮子面板覆盖层                                           |
+
+**注意：这里暂不提供轮子、轮子的每一项以及轮子被选中项/激活是的属性，当然如果非常有必要编辑他们的样式也可以通过自定义class来覆写，建议尽量不要覆写轮子每一项的样式，特别是高度，Picker内部html元素的高度是依照轮子每一项的高度计算而来**
+
+> 轮子的样式 class=\`${Picker.id}_wheel\`
+>
+> 轮子被选中项的样式 class=\`${Picker.id}_activated\`

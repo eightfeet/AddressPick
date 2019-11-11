@@ -143,6 +143,7 @@
   overflow: hidden;
   -webkit-transition: width 0.3s ease;
   transition: width 0.3s ease;
+  min-height: 100%;
 }
 .mobileSelect .content .panel .wheel .selectContainer {
   display: block;
