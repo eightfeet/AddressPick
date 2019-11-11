@@ -303,7 +303,6 @@
 
     window.jsonSelect = new Picker({
         id: 'mobileId',
-        // wheels:msData,
         wheels: [
             {
                 data: [
@@ -329,7 +328,7 @@
             }
         ],
         trigger: '#mobileselectjsontype',
-        keyMap: { name: 'val', value: 'date', childs: 'childs' },
+        keyMap: { name: 'val', value: 'date'},
         cancelBtnText: 'cancel',
         confirmBtnText: 'ensure',
         triggerDisplayData: true,
@@ -356,13 +355,6 @@
             handleResult(data, '#mobileselectjsontype', 'date', 'mobileSelectJsontype')
         },
         title: 'json类型',
-        ensureBtnColor: '#000',
-        cancelBtnColor: '#000',
-        textColor: 'red',
-        titleColor: '#000',
-        titleBgColor: '#fff',
-        bgColor: '#fff',
-        maskOpacity: 0.5,
         style: {
             wrap: {
                 color: '#444'
@@ -413,8 +405,6 @@
             }
         }
     });
-
-    jsonSelect.showPicker([3, 10]);
 
 </script>
 
