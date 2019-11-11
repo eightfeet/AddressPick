@@ -35,7 +35,7 @@
             text-align: center;
         }
 
-        #mobileselect {
+        #picker {
             line-height: 40px;
             background-color: rgb(159, 83, 165);
             width: 260px;
@@ -45,7 +45,7 @@
             text-align: center;
         }
 
-        #mobileselectjsontype {
+        #pickerjsontype {
             line-height: 40px;
             background-color: rgb(20, 150, 159);
             width: 260px;
@@ -55,7 +55,7 @@
             text-align: center;
         }
 
-        #mobileselectcascade {
+        #pickercascade {
             line-height: 40px;
             background-color: rgb(100, 100, 100);
             width: 260px;
@@ -77,9 +77,9 @@
 
 <body>
     <div id="wrap">
-        <div id="mobileselect">demo</div>
-        <div id="mobileselectjsontype">demo-jsontype</div>
-        <div id="mobileselectcascade">demo-cascade 联动</div>
+        <div id="picker">demo</div>
+        <div id="pickerjsontype">demo-jsontype</div>
+        <div id="pickercascade">demo-cascade 联动</div>
         <div id="addresspicker">地址选择</div>
         <br />
         <div style="text-align: center"><a
@@ -161,21 +161,6 @@
     var regions = formatWheelsData(window.BY_HEALTH_REGIONS);
 
     const defaultData = ['15', '1513', '151315'];
-
-    var popularCities = [
-        { name: '北京', id: ['12', '1210'] },
-        { name: '上海', id: ['34', '3410'] },
-        { name: '广州', id: ['15', '1513'] },
-        { name: '深圳', id: ['15', '1524'] },
-        { name: '杭州', id: ['43', '4311'] },
-        { name: '南京', id: ['26', '2613'] },
-        { name: '天津', id: ['37', '3710'] },
-        { name: '苏州', id: ['26', '2616'] },
-        { name: '长沙', id: ['24', '2411'] },
-        { name: '重庆', id: ['13', '1310'] },
-        { name: '成都', id: ['32', '3212'] }
-    ];
-
 
     function handleResult(data, element, key, defaultText) {
         var result = [];
@@ -262,35 +247,35 @@
 
     var msData = getYearDate(2019);
 
-    window.newMobileSelect = new Picker({
-        id: 'newMobileSelect',
+    window.picker = new Picker({
+        id: 'pickerSelect',
         wheels: [
             { data: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'] },
             { data: ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00'] }
         ],
-        trigger: '#mobileselect',
+        trigger: '#picker',
         keyMap: { name: 'val', value: 'date', childs: 'childs' },
         cancelBtnText: 'cancel',
         confirmBtnText: 'ensure',
         triggerDisplayData: true,
         onConfirm: function (data) {
-            handleResult(data, '#mobileselect', null, 'mobileselectStringtype')
+            handleResult(data, '#picker', null, 'normal')
         },
         onCancel: function (data) {
-            handleResult(data, '#mobileselect', null, 'mobileselectStringtype')
+            handleResult(data, '#picker', null, 'normal')
         },
         transitionEnd: function (data) {
-            handleResult(data, '#mobileselect', null, 'mobileselectStringtype')
+            handleResult(data, '#picker', null, 'normal')
         },
         onShow: function (e) {
             console.log(e);
-            handleResult(e.getCurValue(), '#mobileselect', null, 'mobileselectStringtype')
+            handleResult(e.getCurValue(), '#picker', null, 'normal')
         },
         onHide: function (e) {
             console.log(e);
         },
         onChange: function (data) {
-            handleResult(data, '#mobileselect', null, 'mobileselectStringtype')
+            handleResult(data, '#picker', null, 'normal')
         },
         title: 'demo',
         style: {
@@ -326,32 +311,32 @@
                 ]
             }
         ],
-        trigger: '#mobileselectjsontype',
+        trigger: '#pickerjsontype',
         keyMap: { name: 'val', value: 'date', childs: 'childs' },
         cancelBtnText: 'cancel',
         confirmBtnText: 'ensure',
         triggerDisplayData: true,
         onConfirm: function (data) {
             console.log(data);
-            handleResult(data, '#mobileselectjsontype', 'date', 'mobileSelectJsontype')
+            handleResult(data, '#pickerjsontype', 'date', 'pickerjsontype')
         },
         onCancel: function (data) {
             console.log(data);
-            handleResult(data, '#mobileselectjsontype', 'date', 'mobileSelectJsontype')
+            handleResult(data, '#pickerjsontype', 'date', 'pickerjsontype')
         },
         transitionEnd: function (data) {
             console.log(data);
-            handleResult(data, '#mobileselectjsontype', 'date', 'mobileSelectJsontype')
+            handleResult(data, '#pickerjsontype', 'date', 'pickerjsontype')
         },
         onShow: function (e) {
-            handleResult(e.getCurValue(), '#mobileselectjsontype', 'date', 'mobileSelectJsontype');
+            handleResult(e.getCurValue(), '#pickerjsontype', 'date', 'pickerjsontype');
         },
         onHide: function (e) {
             console.log(e);
         },
         onChange: function (data) {
             console.log(data);
-            handleResult(data, '#mobileselectjsontype', 'date', 'mobileSelectJsontype')
+            handleResult(data, '#pickerjsontype', 'date', 'pickerjsontype')
         },
         title: 'json类型',
         style: {
@@ -367,32 +352,32 @@
     window.cascadeSelect = new Picker({
         id: 'cascadeSelect',
         wheels: msData,
-        trigger: '#mobileselectcascade',
+        trigger: '#pickercascade',
         keyMap: { name: 'val', value: 'date', childs: 'childs' },
         cancelBtnText: 'cancel',
         confirmBtnText: 'ensure',
         triggerDisplayData: true,
         onConfirm: function (data) {
             console.log(data);
-            handleResult(data, '#mobileselectcascade', 'date', 'mobileselectCascade')
+            handleResult(data, '#pickercascade', 'date', '联动选择')
         },
         onCancel: function (data) {
             console.log(data);
-            handleResult(data, '#mobileselectcascade', 'date', 'mobileselectCascade')
+            handleResult(data, '#pickercascade', 'date', '联动选择')
         },
         transitionEnd: function (data) {
             console.log(data);
-            handleResult(data, '#mobileselectcascade', 'date', 'mobileselectCascade')
+            handleResult(data, '#pickercascade', 'date', '联动选择')
         },
         onShow: function (e) {
-            handleResult(e.getCurValue(), '#mobileselectcascade', 'date', 'mobileselectCascade');
+            handleResult(e.getCurValue(), '#pickercascade', 'date', '联动选择');
         },
         onHide: function (e) {
             console.log(e);
         },
         onChange: function (data) {
             console.log(data);
-            handleResult(data, '#mobileselectcascade', 'date', 'mobileselectCascade')
+            handleResult(data, '#pickercascade', 'date', '联动选择')
         },
         title: '多级联动',
         style: {

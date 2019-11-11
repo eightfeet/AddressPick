@@ -42,7 +42,7 @@ class Picker {
 		// 确定数据正常
 		if (config.wheels[0].data.length === 0) {
 			console.error(
-				'mobileSelect has been successfully installed, but the data is empty and cannot be initialized.'
+				'Picker has been successfully installed, but the data is empty and cannot be initialized.'
 			);
 			return false;
 		}
@@ -56,7 +56,7 @@ class Picker {
 		this.trigger = document.querySelector(trigger);
 		if (!this.trigger) {
 			console.error(
-				'mobileSelect has been successfully installed, but no trigger found on your page.'
+				'Picker has been successfully installed, but no trigger found on your page.'
 			);
 			return false;
 		}
