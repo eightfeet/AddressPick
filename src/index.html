@@ -157,7 +157,7 @@
         return provinces;
     }
 
-    var MobileSelect = ___Picker___;
+    var Picker = ___Picker___;
 
     var regions = formatWheelsData(window.BY_HEALTH_REGIONS);
 
@@ -198,7 +198,7 @@
         }
     }
 
-    window.newPicker = new MobileSelect({
+    window.newPicker = new Picker({
         id: 'address',
         parentId: 'xxxxxxxxx',
         // emBase: 20,
@@ -263,7 +263,7 @@
 
     var msData = getYearDate(2019);
 
-    window.newMobileSelect = new MobileSelect({
+    window.newMobileSelect = new Picker({
         id: 'newMobileSelect',
         wheels: [
             {data:['周日','周一','周二','周三','周四','周五','周六']},
@@ -301,7 +301,7 @@
         }
     });
 
-    window.jsonSelect = new MobileSelect({
+    window.jsonSelect = new Picker({
         id: 'mobileId',
         // wheels:msData,
         wheels: [
@@ -373,7 +373,7 @@
         }
     });
 
-    window.cascadeSelect = new MobileSelect({
+    window.cascadeSelect = new Picker({
         id: 'cascadeSelect',
         wheels:msData,
         trigger: '#mobileselectcascade',
