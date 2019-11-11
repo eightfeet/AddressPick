@@ -1,7 +1,7 @@
 import s from './Picker.scss';
 import { getPositionByDefaultValue } from '~/utils/regionsWheelsHelper.js';
 import { createDom, isPC } from '~/utils/htmlFactory';
-import { inlineStyle, onceElementTransitionEnd } from '~/utils/tools';
+import { inlineStyle, onceElementTransitionEnd, dormancyFor } from '~/utils/tools';
 import template from './template';
 
 
@@ -33,6 +33,7 @@ class Picker {
 		this.curDistance = [];
 		this.clickStatus = false;
 		this.isPC = isPC;
+		this.isInit = false;
 		this.init(config);
 	}
 
@@ -226,6 +227,7 @@ class Picker {
 			});
 
 			this.fixRowStyle(); //修正列数
+			this.isInit = true;
 		});
 	};
 
@@ -808,10 +810,14 @@ class Picker {
 	};
 
 	showPicker = data => {
-		if (Array.isArray(data)) {
-			this.updatePicker(data);
-		}
-		this.show();
+		Promise.resolve()
+			.then(() => {
+				if (Array.isArray(data)) {
+					this.updatePicker(data);
+				}
+			})
+			.then(() => dormancyFor(100))
+			.then(() => this.show());
 	};
 }
 

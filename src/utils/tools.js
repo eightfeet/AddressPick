@@ -78,3 +78,7 @@ export function onceElementTransitionEnd(element, options = {}) {
 		setCssEndEvent(element, 'transition', options).then(resolve);
 	});
 }
+
+export function dormancyFor(time) {
+	return new Promise(resolve => window.setTimeout(()=>resolve(), time));
+}
