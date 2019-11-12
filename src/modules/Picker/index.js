@@ -1,7 +1,6 @@
 import s from './Picker.scss';
-import { getPositionByDefaultValue } from '~/utils/regionsWheelsHelper.js';
 import { createDom, isPC } from '~/utils/htmlFactory';
-import { inlineStyle, onceElementTransitionEnd, dormancyFor } from '~/utils/tools';
+import { inlineStyle, onceElementTransitionEnd, dormancyFor, getPositionByDefaultValue } from '~/utils/tools';
 import template from './template';
 
 

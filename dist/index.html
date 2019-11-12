@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"><meta http-equiv="X-UA-Compatible" content="ie=edge"><script src="http://by-health-cdn.oss-cn-beijing.aliyuncs.com/region/regions.js"></script><title>AddressPicker</title><style>body,html{width:100%;margin:0;padding:0}h3{margin:0;padding:0}#wrap{padding:10px}#addresspicker{line-height:40px;background-color:#149f40;width:260px;margin:30px auto 10px auto;color:#fff;border-radius:.2em;text-align:center}#mobileselect{line-height:40px;background-color:#9f53a5;width:260px;margin:30px auto 10px auto;color:#fff;border-radius:.2em;text-align:center}#mobileselectjsontype{line-height:40px;background-color:#14969f;width:260px;margin:30px auto 10px auto;color:#fff;border-radius:.2em;text-align:center}#mobileselectcascade{line-height:40px;background-color:#646464;width:260px;margin:30px auto 10px auto;color:#fff;border-radius:.2em;text-align:center}#uitest{display:none}.cascadeSelect_activated{color:red}</style></head><body><div id="wrap"><div id="mobileselect">demo</div><div id="mobileselectjsontype">demo-jsontype</div><div id="mobileselectcascade">demo-cascade 联动</div><div id="addresspicker">地址选择</div><br><div style="text-align:center"><a href="https://github.com/eightfeet/AddressPicker/blob/master/README.md">Documents</a></div><ul id="uitest"><li id="onConfirm"></li><li id="onCancel"></li><li id="transitionEnd"></li><li id="onShow"></li><li id="onHide"></li></ul></div><div id="xxxxxxxxx"></div><script type="text/javascript" src="./picker.js?4b6ef2c0a7ee7165ec76"></script></body><script>//=================================================//
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"><meta http-equiv="X-UA-Compatible" content="ie=edge"><script src="http://by-health-cdn.oss-cn-beijing.aliyuncs.com/region/regions.js"></script><title>AddressPicker</title><style>body,html{width:100%;margin:0;padding:0}h3{margin:0;padding:0}#wrap{padding:10px}#addresspicker{line-height:40px;background-color:#149f40;width:260px;margin:30px auto 10px auto;color:#fff;border-radius:.2em;text-align:center}#picker{line-height:40px;background-color:#9f53a5;width:260px;margin:30px auto 10px auto;color:#fff;border-radius:.2em;text-align:center}#pickerjsontype{line-height:40px;background-color:#14969f;width:260px;margin:30px auto 10px auto;color:#fff;border-radius:.2em;text-align:center}#pickercascade{line-height:40px;background-color:#646464;width:260px;margin:30px auto 10px auto;color:#fff;border-radius:.2em;text-align:center}#uitest{display:none}.cascadeSelect_activated{color:red}</style></head><body><div id="wrap"><div id="picker">demo</div><div id="pickerjsontype">demo-jsontype</div><div id="pickercascade">demo-cascade 联动</div><div id="addresspicker">地址选择</div><br><div style="text-align:center"><a href="https://github.com/eightfeet/AddressPicker/blob/master/README.md">Documents</a></div><ul id="uitest"><li id="onConfirm"></li><li id="onCancel"></li><li id="transitionEnd"></li><li id="onShow"></li><li id="onHide"></li></ul></div><div id="xxxxxxxxx"></div><script type="text/javascript" src="./picker.js?7fe05d2c133658afd8d3"></script></body><script>//=================================================//
     //-----------------------tools---------------------//
     //=================================================//
     function formatWheelsData(data) {
@@ -64,21 +64,6 @@
     var regions = formatWheelsData(window.BY_HEALTH_REGIONS);
 
     const defaultData = ['15', '1513', '151315'];
-
-    var popularCities = [
-        { name: '北京', id: ['12', '1210'] },
-        { name: '上海', id: ['34', '3410'] },
-        { name: '广州', id: ['15', '1513'] },
-        { name: '深圳', id: ['15', '1524'] },
-        { name: '杭州', id: ['43', '4311'] },
-        { name: '南京', id: ['26', '2613'] },
-        { name: '天津', id: ['37', '3710'] },
-        { name: '苏州', id: ['26', '2616'] },
-        { name: '长沙', id: ['24', '2411'] },
-        { name: '重庆', id: ['13', '1310'] },
-        { name: '成都', id: ['32', '3212'] }
-    ];
-
 
     function handleResult(data, element, key, defaultText) {
         var result = [];
@@ -165,35 +150,35 @@
 
     var msData = getYearDate(2019);
 
-    window.newMobileSelect = new Picker({
-        id: 'newMobileSelect',
+    window.picker = new Picker({
+        id: 'pickerSelect',
         wheels: [
-            {data:['周日','周一','周二','周三','周四','周五','周六']},
-            {data:['08:00','09:00','10:00','11:00','12:00','13:00','14:00']}
+            { data: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'] },
+            { data: ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00'] }
         ],
-        trigger: '#mobileselect',
+        trigger: '#picker',
         keyMap: { name: 'val', value: 'date', childs: 'childs' },
         cancelBtnText: 'cancel',
         confirmBtnText: 'ensure',
         triggerDisplayData: true,
         onConfirm: function (data) {
-            handleResult(data, '#mobileselect', null, 'mobileselectStringtype')
+            handleResult(data, '#picker', null, 'normal')
         },
         onCancel: function (data) {
-            handleResult(data, '#mobileselect', null, 'mobileselectStringtype')
+            handleResult(data, '#picker', null, 'normal')
         },
         transitionEnd: function (data) {
-            handleResult(data, '#mobileselect', null, 'mobileselectStringtype')
+            handleResult(data, '#picker', null, 'normal')
         },
         onShow: function (e) {
             console.log(e);
-            handleResult(e.getCurValue(), '#mobileselect', null, 'mobileselectStringtype')
+            handleResult(e.getCurValue(), '#picker', null, 'normal')
         },
         onHide: function (e) {
             console.log(e);
         },
         onChange: function (data) {
-            handleResult(data, '#mobileselect', null, 'mobileselectStringtype')
+            handleResult(data, '#picker', null, 'normal')
         },
         title: 'demo',
         style: {
@@ -205,7 +190,6 @@
 
     window.jsonSelect = new Picker({
         id: 'mobileId',
-        // wheels:msData,
         wheels: [
             {
                 data: [
@@ -230,41 +214,34 @@
                 ]
             }
         ],
-        trigger: '#mobileselectjsontype',
+        trigger: '#pickerjsontype',
         keyMap: { name: 'val', value: 'date', childs: 'childs' },
         cancelBtnText: 'cancel',
         confirmBtnText: 'ensure',
         triggerDisplayData: true,
         onConfirm: function (data) {
             console.log(data);
-            handleResult(data, '#mobileselectjsontype', 'date', 'mobileSelectJsontype')
+            handleResult(data, '#pickerjsontype', 'date', 'pickerjsontype')
         },
         onCancel: function (data) {
             console.log(data);
-            handleResult(data, '#mobileselectjsontype', 'date', 'mobileSelectJsontype')
+            handleResult(data, '#pickerjsontype', 'date', 'pickerjsontype')
         },
         transitionEnd: function (data) {
             console.log(data);
-            handleResult(data, '#mobileselectjsontype', 'date', 'mobileSelectJsontype')
+            handleResult(data, '#pickerjsontype', 'date', 'pickerjsontype')
         },
         onShow: function (e) {
-            handleResult(e.getCurValue(), '#mobileselectjsontype', 'date', 'mobileSelectJsontype');
+            handleResult(e.getCurValue(), '#pickerjsontype', 'date', 'pickerjsontype');
         },
         onHide: function (e) {
             console.log(e);
         },
         onChange: function (data) {
             console.log(data);
-            handleResult(data, '#mobileselectjsontype', 'date', 'mobileSelectJsontype')
+            handleResult(data, '#pickerjsontype', 'date', 'pickerjsontype')
         },
         title: 'json类型',
-        ensureBtnColor: '#000',
-        cancelBtnColor: '#000',
-        textColor: 'red',
-        titleColor: '#000',
-        titleBgColor: '#fff',
-        bgColor: '#fff',
-        maskOpacity: 0.5,
         style: {
             wrap: {
                 color: '#444'
@@ -277,33 +254,33 @@
 
     window.cascadeSelect = new Picker({
         id: 'cascadeSelect',
-        wheels:msData,
-        trigger: '#mobileselectcascade',
+        wheels: msData,
+        trigger: '#pickercascade',
         keyMap: { name: 'val', value: 'date', childs: 'childs' },
         cancelBtnText: 'cancel',
         confirmBtnText: 'ensure',
         triggerDisplayData: true,
         onConfirm: function (data) {
             console.log(data);
-            handleResult(data, '#mobileselectcascade', 'date', 'mobileselectCascade')
+            handleResult(data, '#pickercascade', 'date', '联动选择')
         },
         onCancel: function (data) {
             console.log(data);
-            handleResult(data, '#mobileselectcascade', 'date', 'mobileselectCascade')
+            handleResult(data, '#pickercascade', 'date', '联动选择')
         },
         transitionEnd: function (data) {
             console.log(data);
-            handleResult(data, '#mobileselectcascade', 'date', 'mobileselectCascade')
+            handleResult(data, '#pickercascade', 'date', '联动选择')
         },
         onShow: function (e) {
-            handleResult(e.getCurValue(), '#mobileselectcascade', 'date', 'mobileselectCascade');
+            handleResult(e.getCurValue(), '#pickercascade', 'date', '联动选择');
         },
         onHide: function (e) {
             console.log(e);
         },
         onChange: function (data) {
             console.log(data);
-            handleResult(data, '#mobileselectcascade', 'date', 'mobileselectCascade')
+            handleResult(data, '#pickercascade', 'date', '联动选择')
         },
         title: '多级联动',
         style: {
@@ -314,6 +291,4 @@
                 height: '50em'
             }
         }
-    });
-
-    jsonSelect.showPicker([3, 10]);</script></html>
+    });</script></html>

@@ -82,3 +82,49 @@ export function onceElementTransitionEnd(element, options = {}) {
 export function dormancyFor(time) {
 	return new Promise(resolve => window.setTimeout(()=>resolve(), time));
 }
+
+
+export function getPositionByDefaultValue(defaultval, data, keyMap, jsonType, cascade) {
+	const position =[];
+	if (!defaultval || !data) {
+		return position;
+	}
+	if (cascade) {
+		const cascadeData = data[0].data;
+		let deepth = 0;
+		const loop = (array) => {
+			array.forEach((element, index) => {
+				if (deepth >= defaultval.length) {
+					return;
+				}
+				if (defaultval[deepth] === element[keyMap.name]) {
+					position.push(index);
+					deepth++;
+					if (Array.isArray(element[keyMap.childs]) && element[keyMap.childs].length > 0) {
+						loop(element[keyMap.childs]);
+					}
+				}
+			});
+		};
+		loop(cascadeData);
+	} else if (jsonType) {
+		for (let index = 0; index < defaultval.length; index++) {
+			const element = defaultval[index];
+			data[index].data.forEach((item, index) => {
+				if (element === item[keyMap.name]) {
+					position.push(index);
+				}
+			});
+		}
+	} else {
+		for (let index = 0; index < defaultval.length; index++) {
+			const element = defaultval[index];
+			data[index].data.forEach((item, index) => {
+				if (element === item) {
+					position.push(index);
+				}
+			});
+		}
+	}
+	return position;
+}
