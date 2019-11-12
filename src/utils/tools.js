@@ -86,9 +86,21 @@ export function dormancyFor(time) {
 
 export function getPositionByDefaultValue(defaultval, data, keyMap, jsonType, cascade) {
 	const position =[];
-	if (!defaultval || !data) {
+	if (
+		Object.prototype.toString.call(defaultval) !== '[object Array]'
+	) {
 		return position;
 	}
+	if (
+		Object.prototype.toString.call(data) !== '[object Array]' ||
+		Object.prototype.toString.call(data[0]) !== '[object Object]'
+	) {
+		console.error(
+			'Parameter error and see more details at https://www.chromestatus.com/feature/5088147346030592'
+		);
+		return position;
+	}
+
 	if (cascade) {
 		const cascadeData = data[0].data;
 		let deepth = 0;
@@ -119,6 +131,9 @@ export function getPositionByDefaultValue(defaultval, data, keyMap, jsonType, ca
 	} else {
 		for (let index = 0; index < defaultval.length; index++) {
 			const element = defaultval[index];
+			if (!data[index]) {
+				break;
+			}
 			data[index].data.forEach((item, index) => {
 				if (element === item) {
 					position.push(index);
